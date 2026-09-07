@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>EV Fleet Dashboard</title>
+</head>
+<body style="margin:0;">
+<div id="evFleetDashboard" style="font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#13222E;background:#EFF3F5;padding:18px 22px 40px;box-sizing:border-box;">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px;flex-wrap:wrap;">
+<div style="display:flex;align-items:center;gap:14px;">
+<svg style="height:44px;width:auto;display:block;flex-shrink:0;" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" aria-label="Transscope Insight" role="img"><text id="evfdLogoBlue" x="7" y="62" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="42" letter-spacing="-1" fill="#00AEEF">TRANSSCOPE</text><text id="evfdLogoGrey" x="27" y="98" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="32" letter-spacing="-0.5" fill="#4B4E50">INSIGHT</text></svg>
+<div>
+<h1 style="font-size:32px;font-weight:700;margin:0;display:flex;align-items:center;gap:10px;">
+EV Fleet Dashboard
+<svg style="width:1em;height:1em;flex-shrink:0;color:#189B48;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M17 3c-7 0-13 5-13 12 0 2 .5 3.5 1.5 5 1.5-6 4.5-11 11.5-14-5 3-8 8-9.5 13 1 .3 2 .4 3 .4 6.5 0 10.5-5.9 10.5-12.4 0-1-.3-2-1-3-1 0-2 0-3 0Z"/></svg>
+</h1>
+<p id="evfdSubtitle" style="font-size:12.5px;color:#5C6F7A;margin:3px 0 0;">Battery health &amp; charging status</p>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+<div style="display:flex;align-items:center;gap:8px;">
+<select id="evfdPeriodSelect" title="Charging period" style="height:32px;border-radius:8px;border:1px solid #DCE3E8;background:#FFFFFF;color:#33454F;font-size:12.5px;padding:0 10px;cursor:pointer;box-sizing:border-box;">
+<option value="current_week">Current Week</option>
+<option value="last_week">Last Week</option>
+<option value="last_month">Last Month</option>
+<option value="custom">Custom Range</option>
+</select>
+<span id="evfdCustomRange" hidden style="display:none;align-items:center;gap:6px;">
+<input type="date" id="evfdCustomFrom" style="height:32px;border-radius:8px;border:1px solid #DCE3E8;background:#FFFFFF;color:#33454F;font-size:12px;padding:0 8px;box-sizing:border-box;" />
+<span style="color:#8398A3;">&ndash;</span>
+<input type="date" id="evfdCustomTo" style="height:32px;border-radius:8px;border:1px solid #DCE3E8;background:#FFFFFF;color:#33454F;font-size:12px;padding:0 8px;box-sizing:border-box;" />
+</span>
+</div>
+<span id="evfdSyncPill" style="display:inline-flex;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #DCE3E8;border-radius:999px;padding:6px 12px;font-size:12px;color:#33454F;">
+<span style="width:7px;height:7px;border-radius:50%;background:#2F9E44;display:inline-block;"></span><span id="evfdSyncText">Loading&hellip;</span>
+</span>
+<button id="evfdRefreshBtn" title="Refresh" style="width:30px;height:30px;border-radius:8px;border:1px solid #DCE3E8;background:#FFFFFF;cursor:pointer;font-size:15px;color:#33454F;" onmouseover="this.style.background='#F6F8F9'" onmouseout="this.style.background='#FFFFFF'">&#8635;</button>
+<div style="position:relative;">
+<button id="evfdAlertBadge" title="Alerts &amp; Notifications" style="display:inline-flex;align-items:center;gap:9px;border:none;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;color:#FFFFFF;background:#8398A3;">
+<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.28);font-size:13px;line-height:1;flex-shrink:0;">!</span>
+<span style="white-space:nowrap;">Alerts</span>
+<span id="evfdAlertCount" style="background:rgba(255,255,255,.28);border-radius:999px;padding:2px 10px;font-size:12.5px;">0</span>
+</button>
+<div id="evfdAlertDropdown" hidden style="position:absolute;top:calc(100% + 8px);right:0;width:320px;max-height:400px;overflow-y:auto;background:#FFFFFF;border:1px solid #DCE3E8;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.16);z-index:20;box-sizing:border-box;">
+<div style="padding:12px 16px;border-bottom:1px solid #DCE3E8;font-size:13px;font-weight:600;">Alerts &amp; Notifications</div>
+<div id="evfdAlerts">
+<p style="color:#8398A3;font-size:12px;padding:14px 18px;">No alerts.</p>
+</div>
+<div style="padding:8px 12px;border-top:1px solid #DCE3E8;">
+<button id="evfdManageRulesBtn" style="width:100%;border:none;background:none;color:#2F7DD1;font-size:12px;font-weight:600;padding:6px 4px;cursor:pointer;text-align:left;box-sizing:border-box;">Manage EV Alert Rules &rarr;</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="evfdKpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;"></div>
+<section style="background:#FFFFFF;border:1px solid #DCE3E8;border-radius:10px;overflow:hidden;box-sizing:border-box;margin-bottom:16px;">
+<div style="padding:13px 16px;border-bottom:1px solid #DCE3E8;box-sizing:border-box;">
+<div style="font-size:14px;font-weight:600;">Fleet Composition</div>
+<div style="font-size:11px;color:#8398A3;margin-top:2px;">Electric vs. fossil fuel vehicles</div>
+</div>
+<div id="evfdComposition" style="padding:14px 16px 16px;box-sizing:border-box;"></div>
+</section>
+<section style="background:#FFFFFF;border:1px solid #DCE3E8;border-radius:10px;overflow:hidden;box-sizing:border-box;margin-bottom:16px;">
+<div style="padding:13px 16px;border-bottom:1px solid #DCE3E8;box-sizing:border-box;">
+<div style="font-size:14px;font-weight:600;">Charging Status</div>
+<div style="font-size:11px;color:#8398A3;margin-top:2px;">EV fleet charge-state breakdown</div>
+</div>
+<div id="evfdChargingStatus" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 14px 14px;box-sizing:border-box;"></div>
+</section>
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+<section style="background:#EAF7EF;border:1px solid #189B48;border-radius:10px;overflow:hidden;box-sizing:border-box;">
+<div style="padding:13px 16px;border-bottom:1px solid #189B48;box-sizing:border-box;">
+<div style="font-size:14px;font-weight:600;">EV Fleet Monitoring</div>
+<div style="font-size:11px;color:#8398A3;margin-top:2px;">State of charge, state of health &amp; estimated range</div>
+</div>
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;font-size:12px;box-sizing:border-box;">
+<thead><tr id="evfdTableHead"></tr></thead>
+<tbody id="evfdTableBody">
+<tr><td colspan="11" style="text-align:center;color:#8398A3;padding:20px;box-sizing:border-box;">Connecting to MyGeotab&hellip;</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section style="background:#FFFFFF;border:1px solid #DCE3E8;border-radius:10px;overflow:hidden;box-sizing:border-box;">
+<div style="padding:13px 16px;border-bottom:1px solid #DCE3E8;box-sizing:border-box;">
+<div style="font-size:14px;font-weight:600;">Active Charging Sessions</div>
+<div style="font-size:11px;color:#8398A3;margin-top:2px;">From ChargeEvent</div>
+</div>
+<div id="evfdChargeCards" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:14px 16px;box-sizing:border-box;">
+<p style="color:#8398A3;font-size:12px;">No active sessions loaded yet.</p>
+</div>
+</section>
+<section style="background:#E6E9EC;border:1px solid #8398A3;border-radius:10px;overflow:hidden;box-sizing:border-box;">
+<div style="padding:13px 16px;border-bottom:1px solid #8398A3;box-sizing:border-box;">
+<div style="font-size:14px;font-weight:600;color:#33454F;">Other Vehicles</div>
+<div style="font-size:11px;color:#8398A3;margin-top:2px;">Fossil fuel fleet - fuel level, odometer &amp; engine hours</div>
+</div>
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;font-size:12px;box-sizing:border-box;">
+<thead><tr id="evfdOtherTableHead"></tr></thead>
+<tbody id="evfdOtherTableBody">
+<tr><td colspan="9" style="text-align:center;color:#8398A3;padding:20px;box-sizing:border-box;">Connecting to MyGeotab&hellip;</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+<script type="text/javascript">(function () {
+"use strict";
+if (typeof window.geotab === "undefined") { window.geotab = { addin: {} }; }
+var SOC_DIAGNOSTIC_ID = "DiagnosticStateOfChargeId";
+var CHARGE_STATE_DIAGNOSTIC_ID = "DiagnosticElectricVehicleChargingStateId";
+var LOOKBACK_HOURS = 24;
+var FUEL_LEVEL_DIAGNOSTIC_ID = "DiagnosticFuelLevelId";
+var ODOMETER_DIAGNOSTIC_ID = "DiagnosticOdometerId";
+var ENGINE_HOURS_DIAGNOSTIC_ID = "DiagnosticEngineHoursId";
+var DIESEL_CO2_G_PER_LITRE = 2680; // adjust for your fleet's actual fuel type
+var LEAF_ICON_SVG = '<svg style="width:.95em;height:.95em;vertical-align:-0.12em;margin-right:5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+'<path fill="currentColor" d="M17 3c-7 0-13 5-13 12 0 2 .5 3.5 1.5 5 1.5-6 4.5-11 11.5-14-5 3-8 8-9.5 13 1 .3 2 .4 3 .4 6.5 0 10.5-5.9 10.5-12.4 0-1-.3-2-1-3-1 0-2 0-3 0Z"/>' +
+'</svg>';
+var EV_KM_PER_KWH = 5.5;
+var ICE_CO2_G_PER_KM = 192;
+var FULL_CHARGE_SOC_THRESHOLD = 95;
+var LOW_CHARGE_SOC_THRESHOLD = 20;
+// Names of the MyGeotab Rules the customer creates under Rules & Groups ->
+// Rules. Matched via RuleSearch's wildcard name search, so a rule named
+// e.g. "EV lage acculading (fleet)" still matches. Edit these two strings
+// if the customer's actual rule names differ from what's shown here.
+var EV_ALERT_RULE_NAMES = { lowSoc: "EV lage acculading", chargeComplete: "EV klaar met laden" };
+// Confirmed by the user directly from their MyGeotab address bar: the
+// Rules configuration page is #rules.
+var RULES_PAGE_HASH = "rules";
+var STATUS_ICONS = {
+full: '<svg style="width:1em;height:1em;display:block;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="21" y="10" width="2" height="4" fill="currentColor"/><rect x="4.5" y="9" width="13" height="6" fill="currentColor"/></svg>',
+low: '<svg style="width:1em;height:1em;display:block;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="21" y="10" width="2" height="4" fill="currentColor"/><rect x="4.5" y="9" width="3" height="6" fill="currentColor"/></svg>',
+charging: '<svg style="width:1em;height:1em;display:block;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
+idle: '<svg style="width:1em;height:1em;display:block;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="21" y="10" width="2" height="4" fill="currentColor"/><line x1="1" y1="5" x2="21" y2="19" stroke="currentColor" stroke-width="1.8"/></svg>'
+};
+var COLOR = {"bg":"#EFF3F5","surface":"#FFFFFF","surface2":"#F6F8F9","line":"#DCE3E8","ink900":"#13222E","ink700":"#33454F","ink500":"#5C6F7A","ink400":"#8398A3","green":"#6FA83A","evGreen":"#189B48","darkGreen":"#0E5C2B","accent":"#2F7DD1","panelEvBg":"#EAF7EF","panelFossilBg":"#E6E9EC","logoBlue":"#00AEEF","logoGrey":"#4B4E50"};
+var STATUS_COLOR = {"excellent":"#2F9E44","good":"#6FA83A","fair":"#D9A222","poor":"#DB7B2B","critical":"#D6455D"};
+var CHG_COLOR = {"ac":"#2F7DD1","dc":"#7CB92F"};
+var FONT_MONO = "'SFMono-Regular',Consolas,'Liberation Mono',monospace";
+var NUM_STYLE = "font-family:" + FONT_MONO + ";font-variant-numeric:tabular-nums;";
+var EV_COLUMNS_KEYS = ["Name", "License Plate", "Make / Model", "State of Charge", "Current kWh", "Total Capacity", "Battery Health", "Est. Range", "Charging State", "Last Report", "Action"];
+var OTHER_COLUMNS_KEYS = ["Name", "License Plate", "Fuel Level", "Fuel Economy", "Odometer", "Engine Hours", "Emissions Intensity", "Last Report", "Action"];
+function renderThead(headEl, keys, borderColor, bgColor) {
+headEl.innerHTML = keys.map(function (k) {
+return '<th style="text-align:left;font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:' + COLOR.ink400 + ';padding:9px 10px;border-bottom:1px solid ' + borderColor + ';white-space:nowrap;box-sizing:border-box;background:' + bgColor + ';">' + k + '</th>';
+}).join("");
+}
+function escapeHtml(s) {
+return String(s).replace(/[&<>"']/g, function (c) {
+return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+});
+}
+function actionButtonsCell(td, id, showSessions) {
+var sessionsBtn = !showSessions ? "" :
+'<button data-sessions data-device-id="' + escapeHtml(id) + '" style="border:1px solid ' + COLOR.evGreen + ';background:' + COLOR.surface + ';color:' + COLOR.evGreen + ';font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">' + "Charging Sessions" + '</button>';
+return '<td style="' + td + '"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+sessionsBtn +
+'<button data-trips data-device-id="' + escapeHtml(id) + '" style="border:none;background:' + COLOR.accent + ';color:#FFFFFF;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;box-shadow:0 1px 3px rgba(47,125,209,.4);" onmouseover="this.style.background=\'#2569BA\'" onmouseout="this.style.background=\'' + COLOR.accent + '\'">' + "Trips" + '</button>' +
+'<button data-localize data-device-id="' + escapeHtml(id) + '" style="border:1px solid ' + COLOR.line + ';background:' + COLOR.surface + ';color:' + COLOR.accent + ';font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;" onmouseover="this.style.background=\'' + COLOR.surface2 + '\'" onmouseout="this.style.background=\'' + COLOR.surface + '\'">' + "Localize Vehicle" + '</button>' +
+'</div></td>';
+}
+function vehicleLinkCell(td, id, name, bg) {
+return '<td style="' + td + '"><span data-open-device data-device-id="' + escapeHtml(id) + '" title="' + "Open vehicle asset page" + '" style="display:inline-block;font-family:' + FONT_MONO + ';font-weight:600;color:' + COLOR.accent + ';cursor:pointer;border:1px solid ' + COLOR.line + ';background:' + bg + ';padding:4px 10px;border-radius:6px;" onmouseover="this.style.background=\'rgba(47,125,209,.12)\';this.style.borderColor=\'' + COLOR.accent + '\'" onmouseout="this.style.background=\'' + bg + '\';this.style.borderColor=\'' + COLOR.line + '\'">' + escapeHtml(name) + '</span></td>';
+}
+function startOfWeek(d) {
+var date = new Date(d);
+var day = date.getDay();
+var diff = day === 0 ? -6 : 1 - day;
+date.setDate(date.getDate() + diff);
+date.setHours(0, 0, 0, 0);
+return date;
+}
+// Confirmed by the user directly from their MyGeotab address bar: the EV
+// Charging page is #evCharging, filtered to one vehicle via devices:!(id)
+// (same list-wrapping pattern as #tripsHistory). Date range is left to the
+// user inside that page rather than pinned here.
+function chargingSessionsHash(deviceId) {
+return "evCharging,devices:!(" + deviceId + ")";
+}
+function getPeriodRange(period, customFrom, customTo) {
+var now = new Date();
+if (period === "last_week") {
+var thisWeekStart = startOfWeek(now);
+var from = new Date(thisWeekStart);
+from.setDate(from.getDate() - 7);
+var to = new Date(thisWeekStart);
+to.setMilliseconds(-1);
+return { from: from, to: to, label: "Last Week" };
+}
+if (period === "last_month") {
+var y = now.getFullYear(), m = now.getMonth();
+var lmFrom = new Date(y, m - 1, 1, 0, 0, 0, 0);
+var lmTo = new Date(y, m, 1, 0, 0, 0, 0);
+lmTo.setMilliseconds(-1);
+return { from: lmFrom, to: lmTo, label: "Last Month" };
+}
+if (period === "custom") {
+var cFrom = customFrom ? new Date(customFrom + "T00:00:00") : startOfWeek(now);
+var cTo = customTo ? new Date(customTo + "T23:59:59") : now;
+return { from: cFrom, to: cTo, label: "Custom Range" };
+}
+return { from: startOfWeek(now), to: now, label: "Current Week" };
+}
+geotab.addin.evFleetDashboard = function () {
+var elTableBody = document.getElementById("evfdTableBody");
+var elTableHead = document.getElementById("evfdTableHead");
+var elOtherTableBody = document.getElementById("evfdOtherTableBody");
+var elOtherTableHead = document.getElementById("evfdOtherTableHead");
+var elKpis = document.getElementById("evfdKpis");
+var elChargeCards = document.getElementById("evfdChargeCards");
+var elChargingStatus = document.getElementById("evfdChargingStatus");
+var elAlerts = document.getElementById("evfdAlerts");
+var elAlertBadge = document.getElementById("evfdAlertBadge");
+var elAlertCount = document.getElementById("evfdAlertCount");
+var elAlertDropdown = document.getElementById("evfdAlertDropdown");
+var elManageRulesBtn = document.getElementById("evfdManageRulesBtn");
+var elComposition = document.getElementById("evfdComposition");
+var elSyncText = document.getElementById("evfdSyncText");
+var elRefreshBtn = document.getElementById("evfdRefreshBtn");
+var elPeriodSelect = document.getElementById("evfdPeriodSelect");
+var elCustomRange = document.getElementById("evfdCustomRange");
+var elCustomFrom = document.getElementById("evfdCustomFrom");
+var elCustomTo = document.getElementById("evfdCustomTo");
+var elRoot = document.getElementById("evFleetDashboard");
+var lastModel = null;
+var lastSyncState = null;
+var ruleAlertsCache = [];
+function renderTheads() {
+renderThead(elTableHead, EV_COLUMNS_KEYS, COLOR.evGreen, COLOR.panelEvBg);
+renderThead(elOtherTableHead, OTHER_COLUMNS_KEYS, COLOR.ink400, COLOR.panelFossilBg);
+}
+function updateSyncText() {
+if (!lastSyncState) { elSyncText.textContent = "Loading..."; return; }
+if (lastSyncState.kind === "synced") { elSyncText.textContent = "Synced " + lastSyncState.time.toLocaleTimeString(); }
+else if (lastSyncState.kind === "error") { elSyncText.textContent = "Error loading data"; }
+}
+function loadAndRender(api) {
+var liveFromDate = new Date(Date.now() - LOOKBACK_HOURS * 3600 * 1000).toISOString();
+var period = getPeriodRange(elPeriodSelect.value, elCustomFrom.value, elCustomTo.value);
+api.multiCall([
+["Get", { typeName: "Device", search: { fromDate: liveFromDate } }],
+["Get", { typeName: "StatusData", search: { diagnosticSearch: { id: SOC_DIAGNOSTIC_ID }, fromDate: liveFromDate } }],
+["Get", { typeName: "StatusData", search: { diagnosticSearch: { id: CHARGE_STATE_DIAGNOSTIC_ID }, fromDate: liveFromDate } }],
+["Get", { typeName: "BatteryStateOfHealth", search: {} }],
+["Get", { typeName: "ChargeEvent", search: { fromDate: liveFromDate } }],
+["Get", { typeName: "ChargeEvent", search: { fromDate: period.from.toISOString(), toDate: period.to.toISOString() } }],
+["Get", { typeName: "StatusData", search: { diagnosticSearch: { id: FUEL_LEVEL_DIAGNOSTIC_ID }, fromDate: liveFromDate } }],
+["Get", { typeName: "StatusData", search: { diagnosticSearch: { id: ODOMETER_DIAGNOSTIC_ID }, fromDate: liveFromDate } }],
+["Get", { typeName: "StatusData", search: { diagnosticSearch: { id: ENGINE_HOURS_DIAGNOSTIC_ID }, fromDate: liveFromDate } }],
+["Get", { typeName: "Trip", search: { fromDate: liveFromDate } }],
+["Get", { typeName: "FuelUsed", search: { fromDate: liveFromDate } }],
+["Get", { typeName: "Rule", search: { name: "%" + EV_ALERT_RULE_NAMES.lowSoc + "%" } }],
+["Get", { typeName: "Rule", search: { name: "%" + EV_ALERT_RULE_NAMES.chargeComplete + "%" } }]
+], function (results) {
+try {
+var model = buildModel(results[0], results[1], results[2], results[3], results[4], results[6], results[7], results[8], results[9], results[10]);
+model.totalDeviceCount = (results[0] || []).length;
+model.totalChargedKwh = sumEnergyKwh(results[5]);
+model.acChargedKwh = sumEnergyKwh(results[5], "AC");
+model.dcChargedKwh = sumEnergyKwh(results[5], "DC");
+model.periodChargeEventCount = (results[5] || []).length;
+model.periodLabel = period.label;
+model.isLivePeriod = elPeriodSelect.value === "current_week";
+console.log("EV Fleet Dashboard: period", period.label, "(" + period.from.toISOString() + " to " + period.to.toISOString() + ") -",
+model.periodChargeEventCount, "ChargeEvent record(s),", model.totalChargedKwh, "kWh");
+render(model);
+lastSyncState = { kind: "synced", time: new Date() };
+updateSyncText();
+loadRuleAlerts(api, results[0], results[11], results[12]);
+} catch (e) {
+console.error("EV Fleet Dashboard: failed to process API results", e);
+}
+}, function (err) {
+console.error("EV Fleet Dashboard: MyGeotab API call failed", err);
+lastSyncState = { kind: "error", time: null };
+updateSyncText();
+});
+}
+// Rule/ExceptionEvent lookup runs as a second, separate step after the main
+// multiCall - ExceptionEvent can only be searched by rule ID, not by name,
+// so the Rule Get calls above have to resolve first. Renders nothing (and
+// leaves the customer's own alerts button working normally) until the
+// customer has actually created these two Rules in MyGeotab - a Rule Get
+// with no match just returns an empty array, not an error.
+function loadRuleAlerts(api, devices, lowSocRules, chargeCompleteRules) {
+var deviceNameById = {};
+(devices || []).forEach(function (d) { deviceNameById[d.id] = d.name || d.id; });
+var rules = [];
+if (lowSocRules && lowSocRules[0]) rules.push({ id: lowSocRules[0].id, name: lowSocRules[0].name, sev: "critical" });
+if (chargeCompleteRules && chargeCompleteRules[0]) rules.push({ id: chargeCompleteRules[0].id, name: chargeCompleteRules[0].name, sev: "info" });
+if (!rules.length) { ruleAlertsCache = []; return; }
+var fromDate = new Date(Date.now() - LOOKBACK_HOURS * 3600 * 1000).toISOString();
+api.multiCall(rules.map(function (r) {
+return ["Get", { typeName: "ExceptionEvent", search: { ruleSearch: { id: r.id }, fromDate: fromDate } }];
+}), function (results) {
+var alerts = [];
+rules.forEach(function (r, idx) {
+(results[idx] || []).forEach(function (ex) {
+var devId = ex.device && ex.device.id;
+var vehName = devId ? (deviceNameById[devId] || devId) : "Unknown vehicle";
+alerts.push({ sev: r.sev, title: r.name + " - " + vehName, detail: ex.activeFrom ? new Date(ex.activeFrom).toLocaleString() : "" });
+});
+});
+ruleAlertsCache = alerts;
+if (lastModel) renderAlerts(lastModel.vehicles);
+}, function (err) {
+console.error("EV Fleet Dashboard: rule-based alert lookup failed", err);
+});
+}
+function sumEnergyKwh(chargeEvents, chargeTypeFilter) {
+return (chargeEvents || []).reduce(function (sum, ce) {
+if (chargeTypeFilter && ce.chargeType !== chargeTypeFilter) return sum;
+return sum + (typeof ce.energyConsumedKwh === "number" ? ce.energyConsumedKwh : 0);
+}, 0);
+}
+var vinCache = {};
+function decodeVin(vin, cb) {
+if (!vin) { cb(null); return; }
+if (Object.prototype.hasOwnProperty.call(vinCache, vin)) { cb(vinCache[vin]); return; }
+fetch("https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/" + encodeURIComponent(vin) + "?format=json")
+.then(function (r) { return r.json(); })
+.then(function (data) {
+var row = data.Results && data.Results[0];
+var result = (row && row.Make) ? (row.Make + (row.Model ? " " + row.Model : "")) : null;
+vinCache[vin] = result;
+cb(result);
+})
+.catch(function () { vinCache[vin] = null; cb(null); });
+}
+function latestByDevice(statusRows) {
+var map = {};
+(statusRows || []).forEach(function (row) {
+var id = row.device && row.device.id;
+if (!id) return;
+if (!map[id] || new Date(row.dateTime) > new Date(map[id].dateTime)) map[id] = row;
+});
+return map;
+}
+function buildModel(devices, socRows, chargeRows, sohRows, chargeEvents, fuelRows, odoRows, engineHourRows, tripRows, fuelUsedRows) {
+var socByDevice = latestByDevice(socRows);
+var chargeStateByDevice = latestByDevice(chargeRows);
+var sohByDevice = {};
+(sohRows || []).forEach(function (r) {
+var id = r.device && r.device.id;
+if (id) sohByDevice[id] = r;
+});
+var lastChargeEventByDevice = {};
+(chargeEvents || []).forEach(function (ce) {
+var id = ce.device && ce.device.id;
+if (!id) return;
+if (!lastChargeEventByDevice[id] || new Date(ce.startTime) > new Date(lastChargeEventByDevice[id].startTime)) {
+lastChargeEventByDevice[id] = ce;
+}
+});
+var vehicles = (devices || [])
+.filter(function (d) { return !!socByDevice[d.id]; })
+.map(function (d) {
+var soc = Math.round(socByDevice[d.id].data);
+var chargeStateVal = chargeStateByDevice[d.id] ? Math.round(chargeStateByDevice[d.id].data) : 0;
+var soh = sohByDevice[d.id];
+var sohPct = soh ? Math.round(soh.stateOfHealthMean * 100) : null;
+var capacityKwh = soh ? soh.currentBatteryCapacityMeanKwh : null;
+var lastEvent = lastChargeEventByDevice[d.id] || null;
+var estRangeKm = capacityKwh != null
+? Math.round(capacityKwh * (soc / 100) * 5.5) // ~5.5 km/kWh, adjust per fleet's real consumption
+: null;
+return {
+id: d.id,
+name: d.name || d.id,
+licensePlate: d.licensePlate || null,
+vin: d.vehicleIdentificationNumber || null,
+soc: soc,
+sohPct: sohPct,
+estRangeKm: estRangeKm,
+chargeState: chargeStateVal,
+lastReport: socByDevice[d.id].dateTime,
+lastChargeEvent: lastEvent,
+capacityKwh: capacityKwh
+};
+});
+var fuelByDevice = latestByDevice(fuelRows);
+var odoByDevice = latestByDevice(odoRows);
+var engineHoursByDevice = latestByDevice(engineHourRows);
+var distanceKmByDevice = {};
+(tripRows || []).forEach(function (t) {
+var id = t.device && t.device.id;
+if (!id || typeof t.distance !== "number") return;
+distanceKmByDevice[id] = (distanceKmByDevice[id] || 0) + t.distance;
+});
+var fuelLitresByDevice = {};
+(fuelUsedRows || []).forEach(function (f) {
+var id = f.device && f.device.id;
+if (!id || typeof f.litres !== "number") return;
+fuelLitresByDevice[id] = (fuelLitresByDevice[id] || 0) + f.litres;
+});
+var otherVehicles = (devices || [])
+.filter(function (d) { return !socByDevice[d.id]; })
+.map(function (d) {
+var fuel = fuelByDevice[d.id];
+var odo = odoByDevice[d.id];
+var engineHours = engineHoursByDevice[d.id];
+var lastReport = [fuel, odo, engineHours]
+.filter(Boolean)
+.map(function (r) { return r.dateTime; })
+.sort(function (a, b) { return new Date(b) - new Date(a); })[0] || null;
+var distanceKm = distanceKmByDevice[d.id] || null;
+var fuelLitres = fuelLitresByDevice[d.id] || null;
+var fuelEconomyKmPerL = (distanceKm && fuelLitres) ? distanceKm / fuelLitres : null;
+var emissionsIntensityGPerKm = (distanceKm && fuelLitres)
+? (fuelLitres * DIESEL_CO2_G_PER_LITRE) / distanceKm
+: null;
+return {
+id: d.id,
+name: d.name || d.id,
+licensePlate: d.licensePlate || null,
+fuelPct: fuel ? Math.round(fuel.data) : null,
+odometerKm: odo ? Math.round(odo.data / 1000) : null,
+engineHours: engineHours ? (engineHours.data / 3600) : null,
+fuelEconomyKmPerL: fuelEconomyKmPerL,
+emissionsIntensityGPerKm: emissionsIntensityGPerKm,
+lastReport: lastReport
+};
+});
+return { vehicles: vehicles, otherVehicles: otherVehicles };
+}
+function statusFor(v) {
+if (v.soc <= 15) return "critical";
+if (v.sohPct != null && v.sohPct < 80) return "fair";
+if (v.soc <= 35) return "poor";
+if (v.sohPct != null && v.sohPct < 90) return "good";
+return "excellent";
+}
+function timeAgo(iso) {
+var mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+if (mins < 1) return "<1 min ago";
+if (mins < 60) return mins + " min ago";
+return Math.round(mins / 60) + " hr ago";
+}
+function chargeStateLabel(state) {
+if (state === 1) return "AC charging";
+if (state === 2) return "DC fast charging";
+return "Not charging";
+}
+function render(model) {
+lastModel = model;
+renderKpis(model.vehicles, model.totalDeviceCount, model.totalChargedKwh, model.periodLabel, model.periodChargeEventCount, model.isLivePeriod, model.acChargedKwh, model.dcChargedKwh);
+renderComposition(model.vehicles, model.totalDeviceCount, model.totalChargedKwh, model.periodLabel);
+renderChargingStatus(model.vehicles);
+renderTable(model.vehicles);
+renderChargeCards(model.vehicles);
+renderAlerts(model.vehicles);
+renderOtherVehicles(model.otherVehicles);
+}
+function renderKpis(vehicles, totalDeviceCount, totalChargedKwh, periodLabel, periodChargeEventCount, isLivePeriod, acChargedKwh, dcChargedKwh) {
+var charging = vehicles.filter(function (v) { return v.chargeState !== 0; });
+var ac = charging.filter(function (v) { return v.chargeState === 1; }).length;
+var dc = charging.filter(function (v) { return v.chargeState === 2; }).length;
+var fleetTotal = totalDeviceCount || vehicles.length;
+var evPct = fleetTotal ? Math.round((vehicles.length / fleetTotal) * 100) : 0;
+var withCapacity = vehicles.filter(function (v) { return v.capacityKwh != null; });
+var currentKwhTotal = withCapacity.reduce(function (s, v) { return s + v.capacityKwh * (v.soc / 100); }, 0);
+var avgKwh = withCapacity.length ? currentKwhTotal / withCapacity.length : 0;
+var chargedSub = periodLabel;
+if (periodChargeEventCount === 0) chargedSub += " / 0 charge events found";
+var chargedBreakdown = periodChargeEventCount
+? '<div style="font-size:10px;color:' + COLOR.ink400 + ';margin-top:2px;">' + Math.round(acChargedKwh || 0) + ' kWh AC / ' + Math.round(dcChargedKwh || 0) + ' kWh DC</div>'
+: "";
+var acDcSpec = '<div style="font-size:10px;color:' + COLOR.ink400 + ';margin-top:2px;">AC: up to 11 kW &middot; DC: over 11 kW</div>';
+var currentChargeValue = isLivePeriod ? (Math.round(currentKwhTotal) + " kWh") : "&mdash;";
+var currentChargeSub = isLivePeriod
+? (withCapacity.length ? "avg " + avgKwh.toFixed(1) + " kWh/EV" : "")
+: "live value - n/a for " + periodLabel;
+elKpis.innerHTML = [
+kpiCard("Total Vehicles", fleetTotal, "", COLOR.accent),
+kpiCard(LEAF_ICON_SVG + "EV Vehicles", vehicles.length, evPct + "% of fleet", COLOR.evGreen),
+kpiCard("Charging Now", charging.length, ac + " AC / " + dc + " DC fast" + acDcSpec, charging.length ? COLOR.darkGreen : null),
+kpiCard("Current Charge", currentChargeValue, currentChargeSub, COLOR.evGreen),
+kpiCard("Total Charged", Math.round(totalChargedKwh || 0) + " kWh", chargedSub + chargedBreakdown)
+].join("");
+}
+function kpiCard(label, value, sub, toneColor) {
+return '<div style="background:' + COLOR.surface + ';border:1px solid ' + COLOR.line + ';border-radius:10px;padding:13px 15px;box-sizing:border-box;">' +
+'<div style="font-size:11.5px;color:' + COLOR.ink500 + ';">' + label + '</div>' +
+'<div style="font-size:22px;font-weight:700;margin-top:6px;' + NUM_STYLE + 'color:' + (toneColor || COLOR.ink900) + ';">' + value + '</div>' +
+(sub ? '<div style="font-size:11px;color:' + COLOR.ink400 + ';margin-top:3px;">' + sub + '</div>' : '') +
+'</div>';
+}
+function statusCard(iconColor, icon, label, tooltip, count) {
+return '<div style="border:1px solid ' + COLOR.line + ';border-radius:8px;padding:8px 10px;background:' + COLOR.surface2 + ';box-sizing:border-box;min-width:0;">' +
+'<div style="display:flex;align-items:flex-start;gap:5px;font-size:10.5px;font-weight:600;color:' + COLOR.ink700 + ';margin-bottom:6px;line-height:1.25;">' +
+'<span style="flex-shrink:0;display:inline-flex;font-size:12px;color:' + iconColor + ';margin-top:1px;">' + icon + '</span>' +
+'<span style="flex:1 1 auto;min-width:0;padding-top:1px;">' + label + '</span>' +
+'<span title="' + escapeHtml(tooltip) + '" style="margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1px solid ' + COLOR.ink400 + ';color:' + COLOR.ink400 + ';font-size:9px;font-style:italic;font-family:Georgia,\'Times New Roman\',serif;cursor:help;flex-shrink:0;">i</span>' +
+'</div>' +
+'<div style="display:flex;align-items:center;gap:7px;">' +
+'<span style="flex-shrink:0;display:inline-flex;font-size:17px;color:' + iconColor + ';">' + icon + '</span>' +
+'<span style="display:flex;flex-direction:column;min-width:0;">' +
+'<span style="font-size:16px;font-weight:700;line-height:1.15;' + NUM_STYLE + 'color:' + iconColor + ';">' + count + '</span>' +
+'<span style="font-size:9.5px;color:' + COLOR.ink400 + ';margin-top:1px;">' + "Assets" + '</span>' +
+'</span>' +
+'</div>' +
+'</div>';
+}
+function renderChargingStatus(vehicles) {
+var full = vehicles.filter(function (v) { return v.soc >= FULL_CHARGE_SOC_THRESHOLD; }).length;
+var low = vehicles.filter(function (v) { return v.soc <= LOW_CHARGE_SOC_THRESHOLD; }).length;
+var charging = vehicles.filter(function (v) { return v.chargeState !== 0; }).length;
+var notCharging = vehicles.length - charging;
+elChargingStatus.innerHTML =
+statusCard(STATUS_COLOR.good, STATUS_ICONS.full, "Full Charge", "EVs at " + FULL_CHARGE_SOC_THRESHOLD + "% state of charge or higher", full) +
+statusCard(STATUS_COLOR.critical, STATUS_ICONS.low, "Low Charge", "EVs at " + LOW_CHARGE_SOC_THRESHOLD + "% state of charge or lower", low) +
+statusCard(COLOR.darkGreen, STATUS_ICONS.charging, "Charging", "EVs currently charging (AC or DC fast)", charging) +
+statusCard(COLOR.ink500, STATUS_ICONS.idle, "Not Charging", "EVs not currently charging", notCharging);
+}
+function renderComposition(vehicles, totalDeviceCount, totalChargedKwh, periodLabel) {
+var fleetTotal = totalDeviceCount || vehicles.length;
+var evCount = vehicles.length;
+var fossilCount = Math.max(fleetTotal - evCount, 0);
+var evPct = fleetTotal ? Math.round((evCount / fleetTotal) * 100) : 0;
+var fossilPct = fleetTotal ? 100 - evPct : 0;
+var kmAvoided = (totalChargedKwh || 0) * EV_KM_PER_KWH;
+var co2AvoidedKg = kmAvoided * ICE_CO2_G_PER_KM / 1000;
+elComposition.innerHTML =
+'<div style="display:flex;width:100%;height:14px;border-radius:999px;overflow:hidden;background:' + COLOR.line + ';">' +
+'<span style="display:block;height:100%;width:' + evPct + '%;background:' + COLOR.evGreen + ';"></span>' +
+'<span style="display:block;height:100%;width:' + fossilPct + '%;background:' + COLOR.ink400 + ';"></span>' +
+'</div>' +
+'<div style="display:flex;gap:22px;margin-top:12px;flex-wrap:wrap;">' +
+'<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><span style="width:10px;height:10px;border-radius:3px;flex-shrink:0;display:inline-block;background:' + COLOR.evGreen + ';"></span><span style="color:' + COLOR.ink500 + ';">' + "Electric" + '</span><span style="font-weight:700;margin-left:4px;' + NUM_STYLE + '">' + evCount + ' (' + evPct + '%)</span></div>' +
+'<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><span style="width:10px;height:10px;border-radius:3px;flex-shrink:0;display:inline-block;background:' + COLOR.ink400 + ';"></span><span style="color:' + COLOR.ink500 + ';">' + "Fossil Fuel" + '</span><span style="font-weight:700;margin-left:4px;' + NUM_STYLE + '">' + fossilCount + ' (' + fossilPct + '%)</span></div>' +
+'</div>' +
+'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;padding-top:14px;border-top:1px solid ' + COLOR.line + ';">' +
+'<span style="font-size:12.5px;color:' + COLOR.ink700 + ';font-weight:600;">' + "Est. tailpipe emissions avoided (" + periodLabel + ")" + '</span>' +
+'<span style="font-size:16px;font-weight:700;color:' + COLOR.green + ';' + NUM_STYLE + '">' + co2AvoidedKg.toFixed(0) + ' kg CO2</span>' +
+'</div>' +
+'<div style="font-size:10.5px;color:' + COLOR.ink400 + ';margin-top:4px;">' + "Based on " + Math.round(kmAvoided) + " EV km charged vs. an average ICE vehicle at ~" + ICE_CO2_G_PER_KM + " g CO2/km - adjust both factors for your actual fleet efficiency and vehicle mix." + '</div>';
+}
+function renderTable(vehicles) {
+if (!vehicles.length) {
+elTableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:' + COLOR.ink400 + ';padding:20px;box-sizing:border-box;">' + "No EVs reporting state-of-charge data in the last " + LOOKBACK_HOURS + "h." + '</td></tr>';
+return;
+}
+var sorted = vehicles.slice().sort(function (a, b) { return a.soc - b.soc; });
+elTableBody.innerHTML = sorted.map(function (v, idx) {
+var status = statusFor(v);
+var meterColor = STATUS_COLOR[status];
+var currentKwh = v.capacityKwh != null ? (v.capacityKwh * (v.soc / 100)).toFixed(1) : null;
+var borderBottom = idx === sorted.length - 1 ? "none" : "1px solid " + COLOR.line;
+var chgKey = v.chargeState === 2 ? "dc" : "ac";
+var chargeChip = v.chargeState === 0
+? '<span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;background:' + COLOR.surface2 + ';border:1px solid ' + COLOR.line + ';color:' + COLOR.ink700 + ';">' + "Not charging" + '</span>'
+: '<span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;background:rgba(47,125,209,.15);color:' + CHG_COLOR[chgKey] + ';"><span style="width:6px;height:6px;border-radius:50%;display:inline-block;background:' + CHG_COLOR[chgKey] + ';"></span>' + chargeStateLabel(v.chargeState) + '</span>';
+var vinCellId = "evfd-vin-" + v.id;
+var td = 'padding:9px 10px;border-bottom:' + borderBottom + ';vertical-align:middle;box-sizing:border-box;';
+return '<tr onmouseover="this.style.background=\'' + COLOR.surface2 + '\'" onmouseout="this.style.background=\'transparent\'">' +
+vehicleLinkCell(td, v.id, v.name, COLOR.surface2) +
+'<td style="' + td + '">' + (v.licensePlate ? escapeHtml(v.licensePlate) : "-") + '</td>' +
+'<td id="' + vinCellId + '" style="' + td + 'color:' + COLOR.ink400 + ';font-style:italic;">' + (v.vin ? "Looking up..." : "-") + '</td>' +
+'<td style="' + td + '"><div style="display:flex;align-items:center;gap:6px;min-width:100px;"><div style="flex:1;height:6px;border-radius:999px;background:' + COLOR.line + ';overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;width:' + v.soc + '%;background:' + meterColor + ';"></span></div><span style="font-family:' + FONT_MONO + ';font-size:11.5px;font-weight:600;width:30px;text-align:right;">' + v.soc + '%</span></div></td>' +
+'<td style="' + td + NUM_STYLE + '">' + (currentKwh != null ? currentKwh + " kWh" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.capacityKwh != null ? v.capacityKwh.toFixed(1) + " kWh" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.sohPct != null ? v.sohPct + "%" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.estRangeKm != null ? v.estRangeKm + " km" : "-") + '</td>' +
+'<td style="' + td + '">' + chargeChip + '</td>' +
+'<td style="' + td + '">' + timeAgo(v.lastReport) + '</td>' +
+actionButtonsCell(td, v.id, true) +
+'</tr>';
+}).join("");
+vehicles.forEach(function (v) {
+if (!v.vin) return;
+decodeVin(v.vin, function (label) {
+var cell = document.getElementById("evfd-vin-" + v.id);
+if (!cell) return;
+cell.textContent = label || v.vin;
+cell.style.color = label ? COLOR.ink900 : COLOR.ink400;
+cell.style.fontStyle = label ? "normal" : "italic";
+});
+});
+}
+function renderOtherVehicles(otherVehicles) {
+if (!otherVehicles || !otherVehicles.length) {
+elOtherTableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:' + COLOR.ink400 + ';padding:20px;box-sizing:border-box;">' + "No fossil fuel vehicles found." + '</td></tr>';
+return;
+}
+var sorted = otherVehicles.slice().sort(function (a, b) { return (a.fuelPct == null ? 101 : a.fuelPct) - (b.fuelPct == null ? 101 : b.fuelPct); });
+elOtherTableBody.innerHTML = sorted.map(function (v, idx) {
+var borderBottom = idx === sorted.length - 1 ? "none" : "1px solid " + COLOR.line;
+var td = 'padding:9px 10px;border-bottom:' + borderBottom + ';vertical-align:middle;box-sizing:border-box;';
+var fuelColor = v.fuelPct == null ? COLOR.ink400
+: v.fuelPct <= 15 ? STATUS_COLOR.critical
+: v.fuelPct <= 35 ? STATUS_COLOR.poor
+: STATUS_COLOR.good;
+var fuelCell = v.fuelPct != null
+? '<div style="display:flex;align-items:center;gap:6px;min-width:100px;"><div style="flex:1;height:6px;border-radius:999px;background:' + COLOR.line + ';overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;width:' + v.fuelPct + '%;background:' + fuelColor + ';"></span></div><span style="font-family:' + FONT_MONO + ';font-size:11.5px;font-weight:600;width:30px;text-align:right;">' + v.fuelPct + '%</span></div>'
+: "-";
+return '<tr onmouseover="this.style.background=\'rgba(131,152,163,.18)\'" onmouseout="this.style.background=\'transparent\'">' +
+vehicleLinkCell(td, v.id, v.name, COLOR.surface) +
+'<td style="' + td + '">' + (v.licensePlate ? escapeHtml(v.licensePlate) : "-") + '</td>' +
+'<td style="' + td + '">' + fuelCell + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.fuelEconomyKmPerL != null ? v.fuelEconomyKmPerL.toFixed(1) + " km/L" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.odometerKm != null ? v.odometerKm.toLocaleString() + " km" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.engineHours != null ? v.engineHours.toFixed(1) + " h" : "-") + '</td>' +
+'<td style="' + td + NUM_STYLE + '">' + (v.emissionsIntensityGPerKm != null ? Math.round(v.emissionsIntensityGPerKm) + " g CO2/km" : "-") + '</td>' +
+'<td style="' + td + '">' + (v.lastReport ? timeAgo(v.lastReport) : "-") + '</td>' +
+actionButtonsCell(td, v.id) +
+'</tr>';
+}).join("");
+}
+function renderChargeCards(vehicles) {
+var charging = vehicles.filter(function (v) { return v.chargeState !== 0; });
+if (!charging.length) {
+elChargeCards.innerHTML = '<p style="color:' + COLOR.ink400 + ';font-size:12px;padding:0 2px;">' + "No vehicles are currently charging." + '</p>';
+return;
+}
+elChargeCards.innerHTML = charging.slice(0, 6).map(function (v) {
+var chgKey = v.chargeState === 2 ? "dc" : "ac";
+var badge = v.chargeState === 2
+? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.02em;background:rgba(124,185,47,.18);color:' + CHG_COLOR.dc + ';">' + "DC FAST" + '</span>'
+: '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.02em;background:rgba(47,125,209,.15);color:' + CHG_COLOR.ac + ';">' + "AC LEVEL 2" + '</span>';
+var eta = "-";
+var ev = v.lastChargeEvent;
+if (v.capacityKwh && ev && ev.peakPowerKw) {
+var remainingKwh = v.capacityKwh * (1 - v.soc / 100);
+var hours = remainingKwh / ev.peakPowerKw;
+eta = hours < 1 ? Math.round(hours * 60) + "m" : hours.toFixed(1) + "h";
+}
+return '<div style="border:1px solid ' + COLOR.line + ';border-radius:8px;padding:12px 14px;background:' + COLOR.surface2 + ';box-sizing:border-box;">' +
+'<div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center;"><span style="font-family:' + FONT_MONO + ';font-weight:600;">' + escapeHtml(v.name) + '</span>' + badge + '</div>' +
+'<div style="height:7px;border-radius:999px;background:' + COLOR.line + ';overflow:hidden;margin:6px 0 10px;"><span style="display:block;height:100%;border-radius:999px;width:' + v.soc + '%;background:' + CHG_COLOR[chgKey] + ';"></span></div>' +
+'<div style="display:flex;justify-content:space-between;font-size:11px;color:' + COLOR.ink500 + ';"><span>' + v.soc + "% state of charge" + '</span><span>' + "Est. to full: " + eta + '</span></div>' +
+'</div>';
+}).join("");
+}
+function renderAlerts(vehicles) {
+var alerts = [];
+vehicles.forEach(function (v) {
+if (v.soc <= 15) alerts.push({ sev: "critical", title: "Low state of charge - " + v.name, detail: v.soc + "% SoC" + (v.estRangeKm != null ? ", " + v.estRangeKm + " km est. range" : "") });
+if (v.sohPct != null && v.sohPct < 80) alerts.push({ sev: "warn", title: "Battery health degrading - " + v.name, detail: "State of health at " + v.sohPct + "%" });
+});
+alerts = alerts.concat(ruleAlertsCache);
+elAlertCount.textContent = alerts.length;
+elAlertBadge.style.background = alerts.length ? STATUS_COLOR.critical : COLOR.ink400;
+if (!alerts.length) {
+elAlerts.innerHTML = '<p style="color:' + COLOR.ink400 + ';font-size:12px;padding:14px 18px;">' + "No active alerts." + '</p>';
+return;
+}
+elAlerts.innerHTML = alerts.map(function (a, idx) {
+var railColor = a.sev === "critical" ? STATUS_COLOR.critical : a.sev === "info" ? STATUS_COLOR.good : STATUS_COLOR.fair;
+var borderBottom = idx === alerts.length - 1 ? "none" : "1px solid " + COLOR.line;
+return '<div style="padding:11px 16px;border-bottom:' + borderBottom + ';display:flex;gap:9px;box-sizing:border-box;"><span style="width:3px;border-radius:3px;flex-shrink:0;align-self:stretch;display:block;background:' + railColor + ';"></span>' +
+'<div><div style="font-size:12px;font-weight:600;">' + escapeHtml(a.title) + '</div>' +
+'<div style="font-size:11.5px;color:' + COLOR.ink500 + ';margin-top:2px;">' + escapeHtml(a.detail) + '</div></div></div>';
+}).join("");
+}
+function refresh(api) {
+if (!api) return;
+loadAndRender(api);
+}
+function bindRowActions(tbody) {
+tbody.addEventListener("click", function (e) {
+var sessionsBtn = e.target.closest("[data-sessions]");
+var localizeBtn = !sessionsBtn && e.target.closest("[data-localize]");
+var tripsBtn = !sessionsBtn && !localizeBtn && e.target.closest("[data-trips]");
+var vehLink = !sessionsBtn && !localizeBtn && !tripsBtn && e.target.closest("[data-open-device]");
+if (!sessionsBtn && !localizeBtn && !tripsBtn && !vehLink) return;
+var hash = sessionsBtn
+? chargingSessionsHash(sessionsBtn.getAttribute("data-device-id"))
+: localizeBtn
+? "map,liveVehicleIds:!(" + localizeBtn.getAttribute("data-device-id") + ")"
+: tripsBtn
+? "tripsHistory,devices:!(" + tripsBtn.getAttribute("data-device-id") + ")"
+: "device,id:" + vehLink.getAttribute("data-device-id");
+console.log("EV Fleet Dashboard: navigating to #" + hash);
+try {
+window.parent.location.hash = hash;
+} catch (err) {
+console.error("EV Fleet Dashboard: couldn't set window.parent.location.hash", err);
+}
+});
+}
+return {
+initialize: function (api, state, callback) {
+renderTheads();
+elRefreshBtn.addEventListener("click", function () { refresh(api); });
+bindRowActions(elTableBody);
+bindRowActions(elOtherTableBody);
+elAlertBadge.addEventListener("click", function (e) {
+e.stopPropagation();
+elAlertDropdown.hidden = !elAlertDropdown.hidden;
+});
+elManageRulesBtn.addEventListener("click", function () {
+console.log("EV Fleet Dashboard: navigating to #" + RULES_PAGE_HASH);
+try {
+window.parent.location.hash = RULES_PAGE_HASH;
+} catch (err) {
+console.error("EV Fleet Dashboard: couldn't set window.parent.location.hash", err);
+}
+});
+document.addEventListener("click", function (e) {
+if (!elAlertDropdown.hidden && !elAlertDropdown.contains(e.target) && e.target !== elAlertBadge) {
+elAlertDropdown.hidden = true;
+}
+});
+elPeriodSelect.addEventListener("change", function () {
+var isCustom = elPeriodSelect.value === "custom";
+elCustomRange.hidden = !isCustom;
+elCustomRange.style.display = isCustom ? "flex" : "none";
+if (!isCustom) refresh(api);
+});
+elCustomFrom.addEventListener("change", function () { if (elCustomFrom.value && elCustomTo.value) refresh(api); });
+elCustomTo.addEventListener("change", function () { if (elCustomFrom.value && elCustomTo.value) refresh(api); });
+callback();
+},
+focus: function (api) {
+refresh(api);
+},
+blur: function () {}
+};
+};
+})();</script></body>
+</html>

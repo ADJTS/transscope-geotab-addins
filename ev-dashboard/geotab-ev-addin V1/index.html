@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>EV Fleet Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+  <div id="evFleetDashboard" class="evfd">
+
+    <div class="evfd-toolbar">
+      <div class="evfd-brand">
+        <svg class="evfd-logo" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" aria-label="Transscope Insight" role="img">
+          <text id="evfdLogoBlue" x="7" y="62" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="42" letter-spacing="-1" fill="#00AEEF">TRANSSCOPE</text>
+          <text id="evfdLogoGrey" x="27" y="98" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="32" letter-spacing="-0.5" fill="#4B4E50">INSIGHT</text>
+        </svg>
+        <div>
+        <h1 class="evfd-title">
+          <span data-i18n="title">EV Fleet Dashboard</span>
+          <svg class="evfd-leaf-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M17 3c-7 0-13 5-13 12 0 2 .5 3.5 1.5 5 1.5-6 4.5-11 11.5-14-5 3-8 8-9.5 13 1 .3 2 .4 3 .4 6.5 0 10.5-5.9 10.5-12.4 0-1-.3-2-1-3-1 0-2 0-3 0Z"/></svg>
+        </h1>
+        <p class="evfd-subtitle" data-i18n="subtitle">Battery health &amp; charging status</p>
+        </div>
+      </div>
+      <div class="evfd-toolbar-right">
+        <div class="evfd-filter">
+          <select id="evfdPeriodSelect" class="evfd-select" data-i18n-title="chargingPeriod" title="Charging period">
+            <option value="current_week" data-i18n="periodCurrentWeek">Current Week</option>
+            <option value="last_week" data-i18n="periodLastWeek">Last Week</option>
+            <option value="last_month" data-i18n="periodLastMonth">Last Month</option>
+            <option value="custom" data-i18n="periodCustom">Custom Range</option>
+          </select>
+          <span id="evfdCustomRange" class="evfd-custom-range" hidden>
+            <input type="date" id="evfdCustomFrom" class="evfd-date-input" />
+            <span class="evfd-custom-range-sep">&ndash;</span>
+            <input type="date" id="evfdCustomTo" class="evfd-date-input" />
+          </span>
+        </div>
+        <span id="evfdSyncPill" class="evfd-sync-pill">
+          <span class="evfd-live-dot"></span><span id="evfdSyncText">Loading&hellip;</span>
+        </span>
+        <button id="evfdRefreshBtn" class="evfd-icon-btn" data-i18n-title="refresh" title="Refresh">&#8635;</button>
+        <button id="evfdChargeMapBtn" class="evfd-icon-btn" data-i18n-title="chargeFuelMap" title="Charge &amp; Fuel Map">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 20l-5.5 2V6L9 4m0 16 6-2m-6 2V4m6 14 5.5 2V6L15 4m0 14V4m-6 0 6 2"/><circle cx="12" cy="9.5" r="2.1" fill="currentColor" stroke="none"/></svg>
+        </button>
+
+        <div class="evfd-lang-toggle" id="evfdLangToggle" data-active="en">
+          <button type="button" class="evfd-lang-opt" data-lang="en" title="English">EN</button>
+          <button type="button" class="evfd-lang-opt" data-lang="nl" title="Nederlands">NL</button>
+        </div>
+
+        <button type="button" id="evfdThemeToggle" class="evfd-theme-toggle" data-i18n-title="toggleDarkMode" title="Toggle dark mode" aria-pressed="false">
+          <svg class="evfd-theme-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M20.7 15.3A8.6 8.6 0 0 1 8.7 3.3 9 9 0 1 0 20.7 15.3Z"/></svg>
+          <svg class="evfd-theme-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
+        </button>
+
+        <div class="evfd-alert-badge-wrap">
+          <button id="evfdAlertBadge" class="evfd-alert-badge is-clear" data-i18n-title="alertsDropdownHead" title="Alerts &amp; Notifications">
+            <span class="evfd-alert-bang">!</span>
+            <span class="evfd-alert-label" data-i18n="alerts">Alerts</span>
+            <span id="evfdAlertCount" class="evfd-alert-count">0</span>
+          </button>
+          <div id="evfdAlertDropdown" class="evfd-alert-dropdown" hidden>
+            <div class="evfd-alert-dropdown-head" data-i18n="alertsDropdownHead">Alerts &amp; Notifications</div>
+            <div id="evfdAlerts" class="evfd-alert-list">
+              <p class="evfd-muted" style="padding:14px 18px;" data-i18n="noAlerts">No alerts.</p>
+            </div>
+            <div class="evfd-alert-dropdown-foot">
+              <button type="button" id="evfdManageRulesBtn" class="evfd-manage-rules-btn" data-i18n="manageEvAlertRules">Manage EV Alert Rules &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="evfd-hero">
+      <div id="evfdKpis" class="evfd-kpi-row"><!-- populated by main.js --></div>
+    </div>
+
+    <section class="evfd-panel evfd-composition-panel">
+      <div class="evfd-panel-head">
+        <div class="evfd-panel-title" data-i18n="fleetComposition">Fleet Composition</div>
+        <div class="evfd-panel-sub" data-i18n="fleetCompositionSub">Electric vs. fossil fuel vehicles</div>
+      </div>
+      <div id="evfdComposition" class="evfd-composition-body"><!-- populated by main.js --></div>
+    </section>
+
+    <section class="evfd-panel evfd-charging-status-panel">
+      <div class="evfd-panel-head">
+        <div class="evfd-panel-title" data-i18n="chargingStatus">Charging Status</div>
+        <div class="evfd-panel-sub" data-i18n="chargingStatusSub">EV fleet charge-state breakdown</div>
+      </div>
+      <div id="evfdChargingStatus" class="evfd-status-row"><!-- populated by main.js --></div>
+    </section>
+
+    <div class="evfd-col-main">
+        <section class="evfd-panel evfd-panel-ev">
+          <div class="evfd-panel-head">
+            <div class="evfd-panel-title" data-i18n="evFleetMonitoring">EV Fleet Monitoring</div>
+            <div class="evfd-panel-sub" data-i18n="evFleetMonitoringSub">State of charge, state of health &amp; estimated range</div>
+          </div>
+          <div class="evfd-table-wrap">
+            <table class="evfd-table">
+              <thead>
+                <tr>
+                  <th data-i18n="colName">Name</th>
+                  <th data-i18n="colLicensePlate">License Plate</th>
+                  <th data-i18n="colMakeModel">Make / Model</th>
+                  <th data-i18n="colStateOfCharge">State of Charge</th>
+                  <th data-i18n="colCurrentKwh">Current kWh</th>
+                  <th data-i18n="colTotalCapacity">Total Capacity</th>
+                  <th data-i18n="colBatteryHealth">Battery Health</th>
+                  <th data-i18n="colEstRange">Est. Range</th>
+                  <th data-i18n="colChargingState">Charging State</th>
+                  <th data-i18n="colLastReport">Last Report</th>
+                  <th data-i18n="colAction">Action</th>
+                </tr>
+              </thead>
+              <tbody id="evfdTableBody">
+                <tr><td colspan="11" class="evfd-loading-row" data-i18n="connecting">Connecting to MyGeotab&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="evfd-panel">
+          <div class="evfd-panel-head">
+            <div class="evfd-panel-title" data-i18n="activeChargingSessions">Active Charging Sessions</div>
+            <div class="evfd-panel-sub" data-i18n="fromChargeEvent">From ChargeEvent</div>
+          </div>
+          <div id="evfdChargeCards" class="evfd-charge-grid">
+            <p class="evfd-muted" data-i18n="noActiveSessions">No active sessions loaded yet.</p>
+          </div>
+        </section>
+
+        <section class="evfd-panel evfd-panel-fossil">
+          <div class="evfd-panel-head">
+            <div class="evfd-panel-title" data-i18n="otherVehicles">Other Vehicles</div>
+            <div class="evfd-panel-sub" data-i18n="otherVehiclesSub">Fossil fuel fleet - fuel level, odometer &amp; engine hours</div>
+          </div>
+          <div class="evfd-table-wrap">
+            <table class="evfd-table">
+              <thead>
+                <tr>
+                  <th data-i18n="colName">Name</th>
+                  <th data-i18n="colLicensePlate">License Plate</th>
+                  <th data-i18n="colFuelLevel">Fuel Level</th>
+                  <th data-i18n="colFuelEconomy">Fuel Economy</th>
+                  <th data-i18n="colOdometer">Odometer</th>
+                  <th data-i18n="colEngineHours">Engine Hours</th>
+                  <th data-i18n="colEmissionsIntensity">Emissions Intensity</th>
+                  <th data-i18n="colLastReport">Last Report</th>
+                  <th data-i18n="colAction">Action</th>
+                </tr>
+              </thead>
+              <tbody id="evfdOtherTableBody">
+                <tr><td colspan="9" class="evfd-loading-row" data-i18n="connecting">Connecting to MyGeotab&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+    </div>
+
+  </div>
+
+  <div id="evfdSessionsOverlay" class="evfd-sessions-overlay" hidden>
+    <div class="evfd-sessions-modal">
+      <div class="evfd-sessions-head">
+        <div>
+          <div class="evfd-sessions-title" id="evfdSessionsTitle" data-i18n="chargingSessions">Charging Sessions</div>
+          <div class="evfd-sessions-sub" id="evfdSessionsSub"></div>
+        </div>
+        <button id="evfdSessionsClose" class="evfd-sessions-close" data-i18n-title="close" title="Close">&times;</button>
+      </div>
+      <div class="evfd-sessions-filter">
+        <select id="evfdSessionsPeriod" class="evfd-select">
+          <option value="today" data-i18n="periodToday">Today</option>
+          <option value="this_week" selected data-i18n="periodThisWeek">This Week</option>
+          <option value="last_week" data-i18n="periodLastWeek">Last Week</option>
+          <option value="custom" data-i18n="periodCustom">Custom Range</option>
+        </select>
+        <span id="evfdSessionsCustomRange" class="evfd-custom-range" hidden>
+          <input type="date" id="evfdSessionsCustomFrom" class="evfd-date-input" />
+          <span class="evfd-custom-range-sep">&ndash;</span>
+          <input type="date" id="evfdSessionsCustomTo" class="evfd-date-input" />
+        </span>
+      </div>
+      <div id="evfdSessionsList" class="evfd-sessions-list"><!-- populated by main.js --></div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>

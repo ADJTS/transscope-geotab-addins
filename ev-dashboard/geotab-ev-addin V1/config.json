@@ -1,0 +1,16 @@
+{
+  "name": "EV Fleet Dashboard",
+  "supportEmail": "servicedesk@transscope.nl",
+  "version": "2.0.0",
+  "items": [
+    {
+      "url": "index.html",
+      "path": "ActivityLink/",
+      "menuName": {
+        "en": "EV Fleet Dashboard"
+      },
+      "icon": "icon.svg"
+    }
+  ],
+  "isSigned": false
+}

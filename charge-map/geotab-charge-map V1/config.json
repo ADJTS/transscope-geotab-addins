@@ -1,0 +1,17 @@
+{
+  "name": "Charge & Fuel Map",
+  "supportEmail": "servicedesk@transscope.nl",
+  "version": "1.0.0",
+  "items": [
+    {
+      "url": "index.html",
+      "path": "ActivityLink/",
+      "menuName": {
+        "en": "Charge & Fuel Map",
+        "nl": "Laad- & Tankkaart"
+      },
+      "icon": "icon.svg"
+    }
+  ],
+  "isSigned": false
+}

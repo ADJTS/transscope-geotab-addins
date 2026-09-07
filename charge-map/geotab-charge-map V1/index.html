@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Charge &amp; Fuel Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<div id="cfmApp" class="cfm">
+
+  <!-- ===== Top bar ===== -->
+  <header class="cfm-bar">
+    <div class="cfm-brand">
+      <svg class="cfm-logo" viewBox="0 0 290 130" xmlns="http://www.w3.org/2000/svg" aria-label="Transscope Insight" role="img">
+        <text x="7" y="62" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="42" letter-spacing="-1" fill="#00AEEF">TRANSSCOPE</text>
+        <text x="27" y="98" font-family="-apple-system,'Segoe UI',Roboto,Arial,sans-serif" font-weight="800" font-size="32" letter-spacing="-0.5" fill="#4B4E50">INSIGHT</text>
+      </svg>
+      <div class="cfm-titlewrap">
+        <div class="cfm-eyebrow" data-i18n="eyebrow">Laden &amp; tanken</div>
+        <h1 class="cfm-title" data-i18n="title">Charge &amp; Fuel Map</h1>
+      </div>
+    </div>
+
+    <div class="cfm-bar-right">
+      <div class="cfm-seg" id="cfmTypeSeg" role="tablist" aria-label="Type">
+        <button type="button" data-type="all" class="is-active" data-i18n="fAll">Alle</button>
+        <button type="button" data-type="charge" data-i18n="fCharge">Laden</button>
+        <button type="button" data-type="fuel" data-i18n="fFuel">Tanken</button>
+      </div>
+      <button id="cfmVehBtn" class="cfm-icon-btn is-on" data-i18n-title="toggleVehicles" title="Voertuigen tonen/verbergen" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v6a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H7.5v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7.5" cy="15" r="1.2" fill="currentColor"/><circle cx="16.5" cy="15" r="1.2" fill="currentColor"/></svg>
+      </button>
+      <button id="cfmLocateBtn" class="cfm-icon-btn" data-i18n-title="fitFleet" title="Zoom naar wagenpark">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button id="cfmRefreshBtn" class="cfm-icon-btn" data-i18n-title="refresh" title="Verversen">&#8635;</button>
+      <button id="cfmLangBtn" class="cfm-toggle-btn" data-i18n-title="language" title="Taal">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.6 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.6-3.8-9S9.5 5.5 12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span id="cfmLangCode">NL</span>
+      </button>
+      <button id="cfmThemeBtn" class="cfm-toggle-btn" data-i18n-title="theme" title="Thema">
+        <svg class="cfm-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="cfm-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Filter rail ===== -->
+  <div class="cfm-filters" id="cfmFilters">
+    <div class="cfm-filter-group" id="cfmChargeFilters">
+      <label class="cfm-check">
+        <input type="checkbox" id="cfmAvailOnly" />
+        <span data-i18n="availOnly">Alleen beschikbaar</span>
+      </label>
+      <label class="cfm-check">
+        <input type="checkbox" id="cfmFastOnly" />
+        <span data-i18n="fastOnly">Alleen snelladen (&ge;50 kW)</span>
+      </label>
+      <div class="cfm-slider-inline">
+        <span data-i18n="minPower">Min. vermogen</span>
+        <input type="range" id="cfmMinPower" min="0" max="150" step="10" value="0" />
+        <span class="cfm-slider-val" id="cfmMinPowerVal">0 kW</span>
+      </div>
+      <select id="cfmConnector" class="cfm-mini-select" data-i18n-title="connector" title="Stekker">
+        <option value="" data-i18n="connAny">Alle stekkers</option>
+        <option value="T2">Type 2</option>
+        <option value="CCS">CCS</option>
+        <option value="CHADEMO">CHAdeMO</option>
+        <option value="T1">Type 1</option>
+        <option value="SCHUKO">Schuko</option>
+      </select>
+    </div>
+    <div class="cfm-filter-group" id="cfmFuelFilters" hidden>
+      <select id="cfmFuelKind" class="cfm-mini-select" data-i18n-title="fuelKind" title="Brandstof">
+        <option value="" data-i18n="fuelAny">Alle brandstof</option>
+        <option value="diesel" data-i18n="fuelDiesel">Diesel</option>
+        <option value="octane_95" data-i18n="fuelE95">Euro 95 / E10</option>
+        <option value="octane_98" data-i18n="fuelE98">Super 98 / E5</option>
+        <option value="lpg" data-i18n="fuelLpg">LPG</option>
+        <option value="cng" data-i18n="fuelCng">CNG</option>
+        <option value="hgv_diesel" data-i18n="fuelHgv">Truck diesel</option>
+      </select>
+      <label class="cfm-check">
+        <input type="checkbox" id="cfmOpenNow" />
+        <span data-i18n="openNow">Nu geopend</span>
+      </label>
+    </div>
+    <div class="cfm-count" id="cfmCount"></div>
+  </div>
+
+  <!-- ===== Map + panel ===== -->
+  <div class="cfm-stage">
+    <div id="cfmMap" class="cfm-map"></div>
+
+    <div class="cfm-legend" id="cfmLegend">
+      <div class="cfm-legend-row"><span class="cfm-dot dot-free"></span><span data-i18n="legFree">Laadpunt vrij</span></div>
+      <div class="cfm-legend-row"><span class="cfm-dot dot-full"></span><span data-i18n="legFull">Laadpunt bezet</span></div>
+      <div class="cfm-legend-row"><span class="cfm-dot dot-unknown"></span><span data-i18n="legUnknown">Status onbekend</span></div>
+      <div class="cfm-legend-row"><span class="cfm-dot dot-fuel"></span><span data-i18n="legFuel">Tankstation</span></div>
+      <div class="cfm-legend-row"><span class="cfm-dot dot-vehicle"></span><span data-i18n="legVehicle">Eigen voertuig</span></div>
+    </div>
+
+    <div class="cfm-panel" id="cfmPanel" hidden>
+      <button class="cfm-panel-close" id="cfmPanelClose" aria-label="Sluiten">&times;</button>
+      <div class="cfm-panel-body" id="cfmPanelBody"><!-- injected --></div>
+    </div>
+
+    <div class="cfm-toast" id="cfmToast" hidden></div>
+  </div>
+
+  <footer class="cfm-foot">
+    <span id="cfmSource" class="cfm-source"></span>
+    <span class="cfm-foot-spacer"></span>
+    <span class="cfm-attrib" data-i18n="attrib">Laaddata: NDW / Open Charge Map &middot; Tankstations: OpenStreetMap &middot; Kaart: Esri</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+
+<!-- =====================================================================
+     YOUR SETTINGS  —  put your two values between the quotes, then save.
+     Leave a value as ""  to skip that source.
+       chargeProxyUrl : the address of your Cloudflare Worker (Guide part 2)
+                        e.g. "https://charge-proxy.yourname.workers.dev"
+       ocmKey         : your free Open Charge Map key   (Guide part 1)
+     With both set, the map uses NDW live data first and Open Charge Map
+     as the fallback.
+     ===================================================================== -->
+<script>
+  window.CFM_CONFIG = {
+    chargeProxyUrl: "https://charge-proxy.auke-3c7.workers.dev",
+    ocmKey: "0ef92835-613e-4112-bba9-ee18528cb5d3"
+  };
+</script>
+
+<script type="text/javascript" src="main.js"></script>
+</body>
+</html>
