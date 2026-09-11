@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" />
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
@@ -41,6 +42,22 @@
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
       <button id="cfmRefreshBtn" class="cfm-icon-btn" data-i18n-title="refresh" title="Verversen">&#8635;</button>
+      <div class="cfm-poi-wrap">
+        <button id="cfmPoiBtn" class="cfm-icon-btn cfm-poi-toggle" data-i18n-title="poiBtn" title="POI">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 16.9l-5.9 3.7 1.6-6.7-5.2-4.5 6.8-.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="cfm-poi-panel" id="cfmPoiPanel" hidden>
+          <div class="cfm-poi-head" data-i18n="poiHead">Eigen locaties (POI)</div>
+          <div class="cfm-poi-searchrow">
+            <input type="text" id="cfmPoiQuery" class="cfm-poi-input" data-i18n-placeholder="poiSearchPh" placeholder="Zoek adres of bedrijfsnaam…" />
+            <button id="cfmPoiSearchBtn" class="cfm-btn primary cfm-poi-searchbtn" data-i18n="poiSearch">Zoek</button>
+          </div>
+          <div class="cfm-poi-results" id="cfmPoiResults"></div>
+          <div class="cfm-poi-listhead" data-i18n="poiListHead">Jouw POI's</div>
+          <div class="cfm-poi-list" id="cfmPoiList"><p class="cfm-poi-empty" data-i18n="poiEmpty">Nog geen POI's toegevoegd.</p></div>
+          <p class="cfm-poi-attrib" data-i18n="poiAttrib">Zoeken via OpenStreetMap Nominatim (gratis, geen sleutel) — geen Google Maps.</p>
+        </div>
+      </div>
       <button id="cfmLangBtn" class="cfm-toggle-btn" data-i18n-title="language" title="Taal">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.6 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.6-3.8-9S9.5 5.5 12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>
         <span id="cfmLangCode">NL</span>
@@ -124,6 +141,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
 
 <!-- =====================================================================
      YOUR SETTINGS  —  put your two values between the quotes, then save.
