@@ -320,6 +320,9 @@ body {
   user-select: none;
 }
 .cfm-check input { accent-color: var(--cfm-accent); width: 15px; height: 15px; }
+.cfm-msg-loc-group { display: flex; flex-direction: column; gap: 7px; }
+.cfm-check input:disabled { opacity: .4; cursor: not-allowed; }
+.cfm-check:has(input:disabled) { opacity: .55; cursor: not-allowed; }
 .cfm-slider-inline {
   display: inline-flex;
   align-items: center;

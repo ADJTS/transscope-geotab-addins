@@ -89,8 +89,10 @@
   var I18N = {
     nl: {
       eyebrow: "Laden & tanken", title: "Charge & Fuel Map",
-      fAll: "Alle", fCharge: "Laden", fFuel: "Tanken",
+      fAll: "Alle", fCharge: "Laden", fFuel: "Tanken", fNone: "Geen",
       toggleVehicles: "Voertuigen tonen/verbergen", fitFleet: "Zoom naar wagenpark",
+      myLocation: "Mijn locatie", locFail: "Kon je locatie niet bepalen — wagenpark getoond",
+      vehiclesOnly: "Alleen voertuigen",
       refresh: "Verversen", language: "Taal", theme: "Thema",
       availOnly: "Alleen beschikbaar", fastOnly: "Alleen snelladen (\u226550 kW)",
       minPower: "Min. vermogen", connector: "Stekker", connAny: "Alle stekkers",
@@ -134,6 +136,7 @@
       msgToDriver: "Bericht", proximityAlert: "Melding", navFail: "Kon niet navigeren binnen MyGeotab",
       driver: "Bestuurder", noDriver: "Geen bestuurder toegewezen",
       msgAttachLoc: "Stuur dichtstbijzijnde {kind} als navigatiedoel",
+      msgLocNone: "Geen locatie meesturen",
       chargeLocKind: "laadlocatie", fuelLocKind: "tankstation",
       msgDefault: "Hoi, kun je met {veh} naar het opgegeven punt rijden?",
       send: "Verstuur", msgNeedsLive: "Alleen beschikbaar binnen MyGeotab (niet in de preview).",
@@ -157,8 +160,10 @@
     },
     en: {
       eyebrow: "Charge & fuel", title: "Charge & Fuel Map",
-      fAll: "All", fCharge: "Charging", fFuel: "Fuel",
+      fAll: "All", fCharge: "Charging", fFuel: "Fuel", fNone: "None",
       toggleVehicles: "Show / hide vehicles", fitFleet: "Zoom to fleet",
+      myLocation: "My location", locFail: "Couldn't get your location — showing fleet instead",
+      vehiclesOnly: "Vehicles only",
       refresh: "Refresh", language: "Language", theme: "Theme",
       availOnly: "Available only", fastOnly: "Fast charging only (\u226550 kW)",
       minPower: "Min. power", connector: "Connector", connAny: "Any connector",
@@ -202,6 +207,7 @@
       msgToDriver: "Message", proximityAlert: "Alert", navFail: "Couldn't navigate inside MyGeotab",
       driver: "Driver", noDriver: "No driver assigned",
       msgAttachLoc: "Send nearest {kind} as a navigation destination",
+      msgLocNone: "Don't attach a location",
       chargeLocKind: "charging location", fuelLocKind: "fuel station",
       msgDefault: "Hi, can you drive {veh} to the location I've shared?",
       send: "Send", msgNeedsLive: "Only available inside MyGeotab (not in this preview).",
@@ -602,9 +608,11 @@
     var availTimer = null;
 
     var filters = {
-      type: "all", availOnly: false, fastOnly: false, minPower: 0,
+      type: "none", availOnly: false, fastOnly: false, minPower: 0,
       connector: "", fuelKind: "", openNow: false
     };
+    function wantCharge() { return filters.type === "all" || filters.type === "charge"; }
+    function wantFuel() { return filters.type === "all" || filters.type === "fuel"; }
 
     var GLYPH = {
       bolt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
@@ -1262,13 +1270,13 @@
         setSource(pending > 0 ? "loading" : "done");
         if (selectedVehId) openVehiclePanel(selectedVehId, true);
       }
-      if (filters.type !== "fuel") {
+      if (wantCharge()) {
         pending++;
         fetchCharge(bx).then(function (r) {
           lastSrc.charge = r.src; mergeCache("charge", r.list);
         }).catch(function (e) { lastSrc.charge = "err"; console.warn("charge load", e); }).then(settle);
       }
-      if (filters.type !== "charge" && fuelNeedsFetch(bx)) {
+      if (wantFuel() && fuelNeedsFetch(bx)) {
         pending++;
         fetchFuel(bx).then(function (r) {
           lastSrc.fuel = r.src; mergeCache("fuel", r.list); markFuelTiles(bx);
@@ -1277,7 +1285,7 @@
       if (pending === 0) { renderMarkers(); setSource("done"); }
     }
     function refreshAvailability() {
-      if (filters.type === "fuel") return;
+      if (!wantCharge()) return;
       if (!map || map.getZoom() < CONFIG.minZoomFetch) return;
       if (!CONFIG.chargeProxyUrl && !CONFIG.ocmKey) return;
       var bx = boundsToBbox(map.getBounds(), 0.15);
@@ -1335,10 +1343,10 @@
 
     function visibleStations() {
       var out = [];
-      if (filters.type !== "fuel") {
+      if (wantCharge()) {
         for (var id in cache.charge) if (passCharge(cache.charge[id])) out.push(cache.charge[id]);
       }
-      if (filters.type !== "charge") {
+      if (wantFuel()) {
         for (var fid in cache.fuel) if (passFuel(cache.fuel[fid])) out.push(cache.fuel[fid]);
       }
       return out;
@@ -1360,7 +1368,7 @@
       }
       chargeCluster.addLayers(cLayers);
       fuelCluster.addLayers(fLayers);
-      $("cfmCount").textContent = t("countTpl", { c: cc, f: fc });
+      $("cfmCount").textContent = filters.type === "none" ? t("vehiclesOnly") : t("countTpl", { c: cc, f: fc });
       renderVehicles();
     }
 
@@ -1384,13 +1392,14 @@
       el.className = "cfm-source";
       if (state === "loading") { el.innerHTML = dot + t("loading"); return; }
       if (state === "zoom") { el.className = "cfm-source is-stale"; el.innerHTML = dot + t("zoomIn"); return; }
+      if (filters.type === "none") { el.innerHTML = dot + t("vehiclesOnly"); return; }
       var sc = lastSrc.charge, sf = lastSrc.fuel, txt;
       if (sc === "err" || sf === "err") { el.className = "cfm-source is-error"; }
       if (sc === "demo") { el.className = "cfm-source is-stale"; txt = t("demoSource"); }
       else {
         var parts = [];
-        if (filters.type !== "fuel" && sc && sc !== "err") parts.push(sc);
-        if (filters.type !== "charge" && sf && sf !== "err") parts.push(sf);
+        if (wantCharge() && sc && sc !== "err") parts.push(sc);
+        if (wantFuel() && sf && sf !== "err") parts.push(sf);
         txt = t("live") + (parts.length ? " \u00b7 " + parts.join(" + ") : "") +
               (sc === "err" || sf === "err" ? " \u00b7 " + t("errSource") : "");
       }
@@ -1570,7 +1579,11 @@
 
       // message-to-Drive compose (hidden until the toolrow button opens it)
       html += '<div class="cfm-p-expand" id="cfmMsgBox" hidden>' +
-        '<label class="cfm-check" style="margin-bottom:8px"><input type="checkbox" id="cfmMsgLoc"' + (nc || nf ? "" : " disabled") + "> <span>" + esc(t("msgAttachLoc", { kind: t(v.soc != null ? "chargeLocKind" : "fuelLocKind") })) + "</span></label>" +
+        '<div class="cfm-msg-loc-group" style="margin-bottom:8px">' +
+        '<label class="cfm-check"><input type="radio" name="cfmMsgLocTarget" id="cfmMsgLocNone" value="none" checked> <span data-i18n="msgLocNone">' + esc(t("msgLocNone")) + "</span></label>" +
+        '<label class="cfm-check"><input type="radio" name="cfmMsgLocTarget" id="cfmMsgLocCharge" value="charge"' + (nc ? "" : " disabled") + "> <span>" + esc(t("msgAttachLoc", { kind: t("chargeLocKind") })) + "</span></label>" +
+        '<label class="cfm-check"><input type="radio" name="cfmMsgLocTarget" id="cfmMsgLocFuel" value="fuel"' + (nf ? "" : " disabled") + "> <span>" + esc(t("msgAttachLoc", { kind: t("fuelLocKind") })) + "</span></label>" +
+        "</div>" +
         '<textarea id="cfmMsgText" class="cfm-textarea" rows="3">' + esc(t("msgDefault", { veh: v.name })) + "</textarea>" +
         '<div class="cfm-p-actions"><button class="cfm-btn primary" id="cfmMsgSend">' + TOOL_ICON.msg + '<span data-i18n="send">Verstuur</span></button></div>' +
         '<div class="cfm-msg-note" id="cfmMsgNote"></div>' +
@@ -1671,9 +1684,11 @@
       var sendBtn = $("cfmMsgSend");
       if (sendBtn) sendBtn.onclick = function () {
         if (!apiRef) { $("cfmMsgNote").textContent = t("msgNeedsLive"); return; }
-        var useLoc = $("cfmMsgLoc").checked;
+        var locTargetEl = document.querySelector('input[name="cfmMsgLocTarget"]:checked');
+        var locKind = locTargetEl ? locTargetEl.value : "none";
+        var useLoc = locKind !== "none";
         var text = $("cfmMsgText").value.trim();
-        var target = nc || nf;
+        var target = locKind === "charge" ? nc : locKind === "fuel" ? nf : null;
         if (useLoc && !target) { $("cfmMsgNote").textContent = t("msgNoTarget"); return; }
         sendBtn.disabled = true;
         apiRef.getSession(function (credentials) {
@@ -1683,7 +1698,7 @@
               isDirectionToVehicle: true,
               device: { id: v.id },
               messageContent: useLoc
-                ? { contentType: "Location", address: (target.s.name + (target.s.address ? " — " + target.s.address : "")).slice(0, 80), latitude: Number(target.s.lat), longitude: Number(target.s.lng) }
+                ? { contentType: "Location", message: text, address: (target.s.name + (target.s.address ? " — " + target.s.address : "")).slice(0, 80), latitude: Number(target.s.lat), longitude: Number(target.s.lng) }
                 : { contentType: "Normal", message: text },
               user: me ? { id: me.id } : undefined
             };
@@ -1891,13 +1906,23 @@
       else map.fitBounds(L.latLngBounds(pts).pad(0.2), { maxZoom: 13 });
     }
 
+    function goToMyLocation() {
+      if (!navigator.geolocation) { toast(t("locFail")); fitFleet(); return; }
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        map.setView([pos.coords.latitude, pos.coords.longitude], 14);
+      }, function () {
+        toast(t("locFail"));
+        fitFleet();
+      }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+    }
+
     /* ---- controls ---- */
     function setType(type) {
       filters.type = type;
       var segs = $("cfmTypeSeg").children;
       for (var i = 0; i < segs.length; i++) segs[i].classList.toggle("is-active", segs[i].getAttribute("data-type") === type);
-      $("cfmChargeFilters").hidden = type === "fuel";
-      $("cfmFuelFilters").hidden = type === "charge";
+      $("cfmChargeFilters").hidden = type === "fuel" || type === "none";
+      $("cfmFuelFilters").hidden = type === "charge" || type === "none";
       onMove();
     }
 
@@ -1913,7 +1938,7 @@
         if (!showVehicles) { closePanel(); }
         renderVehicles();
       });
-      $("cfmLocateBtn").addEventListener("click", fitFleet);
+      $("cfmLocateBtn").addEventListener("click", goToMyLocation);
       $("cfmRefreshBtn").addEventListener("click", function () { loadVehicles(); onMove(); });
       $("cfmPoiBtn").addEventListener("click", function (e) {
         e.stopPropagation();

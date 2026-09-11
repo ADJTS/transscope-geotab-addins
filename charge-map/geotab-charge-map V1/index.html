@@ -31,14 +31,15 @@
 
     <div class="cfm-bar-right">
       <div class="cfm-seg" id="cfmTypeSeg" role="tablist" aria-label="Type">
-        <button type="button" data-type="all" class="is-active" data-i18n="fAll">Alle</button>
+        <button type="button" data-type="all" data-i18n="fAll">Alle</button>
         <button type="button" data-type="charge" data-i18n="fCharge">Laden</button>
         <button type="button" data-type="fuel" data-i18n="fFuel">Tanken</button>
+        <button type="button" data-type="none" class="is-active" data-i18n="fNone">Geen</button>
       </div>
       <button id="cfmVehBtn" class="cfm-icon-btn is-on" data-i18n-title="toggleVehicles" title="Voertuigen tonen/verbergen" aria-pressed="true">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v6a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H7.5v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7.5" cy="15" r="1.2" fill="currentColor"/><circle cx="16.5" cy="15" r="1.2" fill="currentColor"/></svg>
       </button>
-      <button id="cfmLocateBtn" class="cfm-icon-btn" data-i18n-title="fitFleet" title="Zoom naar wagenpark">
+      <button id="cfmLocateBtn" class="cfm-icon-btn" data-i18n-title="myLocation" title="Mijn locatie">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
       <button id="cfmRefreshBtn" class="cfm-icon-btn" data-i18n-title="refresh" title="Verversen">&#8635;</button>
@@ -71,7 +72,7 @@
 
   <!-- ===== Filter rail ===== -->
   <div class="cfm-filters" id="cfmFilters">
-    <div class="cfm-filter-group" id="cfmChargeFilters">
+    <div class="cfm-filter-group" id="cfmChargeFilters" hidden>
       <label class="cfm-check">
         <input type="checkbox" id="cfmAvailOnly" />
         <span data-i18n="availOnly">Alleen beschikbaar</span>
