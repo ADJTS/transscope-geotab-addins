@@ -260,6 +260,11 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
+  function apiErrText(err) {
+    if (!err) return "unknown error";
+    if (typeof err === "string") return err;
+    return err.message || err.name || (err.data && (err.data.message || err.data.name)) || JSON.stringify(err);
+  }
   function debounce(fn, ms) {
     var h;
     return function () {
@@ -1678,7 +1683,7 @@
               isDirectionToVehicle: true,
               device: { id: v.id },
               messageContent: useLoc
-                ? { contentType: "Location", address: target.s.name + (target.s.address ? " — " + target.s.address : ""), latitude: target.s.lat, longitude: target.s.lng }
+                ? { contentType: "Location", address: (target.s.name + (target.s.address ? " — " + target.s.address : "")).slice(0, 80), latitude: Number(target.s.lat), longitude: Number(target.s.lng) }
                 : { contentType: "Normal", message: text },
               user: me ? { id: me.id } : undefined
             };
@@ -1688,10 +1693,10 @@
               toast(t("msgSent"));
             }, function (err) {
               sendBtn.disabled = false;
-              $("cfmMsgNote").textContent = t("msgFailed");
-              console.warn("send TextMessage failed", err);
+              $("cfmMsgNote").textContent = t("msgFailed") + " (" + apiErrText(err) + ")";
+              console.warn("send TextMessage failed", err, entity);
             });
-          }, function (err) { sendBtn.disabled = false; $("cfmMsgNote").textContent = t("msgFailed"); console.warn(err); });
+          }, function (err) { sendBtn.disabled = false; $("cfmMsgNote").textContent = t("msgFailed") + " (" + apiErrText(err) + ")"; console.warn(err); });
         }, false);
       };
 
