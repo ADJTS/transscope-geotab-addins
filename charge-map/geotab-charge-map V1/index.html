@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" />
-<link rel="stylesheet" type="text/css" href="style.css?v=20260911d" />
+<link rel="stylesheet" type="text/css" href="style.css?v=20260918b" />
 </head>
 <body>
 <div id="cfmApp" class="cfm">
@@ -36,6 +36,97 @@
         <button type="button" data-type="fuel" data-i18n="fFuel">Tanken</button>
         <button type="button" data-type="none" class="is-active" data-i18n="fNone">Geen</button>
       </div>
+      <div class="cfm-filters-wrap">
+        <button id="cfmFiltersBtn" class="cfm-icon-btn cfm-filters-toggle" data-i18n-title="filtersBtn" title="Filters" hidden>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="6" r="2" fill="var(--cfm-surface)" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="12" r="2" fill="var(--cfm-surface)" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="18" r="2" fill="var(--cfm-surface)" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span data-i18n="filtersBtn">Filters</span>
+          <span id="cfmFiltersBadge" class="cfm-filters-badge" hidden>0</span>
+        </button>
+        <div class="cfm-poi-panel cfm-filters-panel" id="cfmFiltersPanel" hidden>
+          <div class="cfm-filters-headrow">
+            <span data-i18n="filtersBtn">Filters</span>
+            <button id="cfmFiltersReset" class="cfm-filters-reset" hidden><span data-i18n="filtersResetLbl">Filters opnieuw instellen</span> (<span id="cfmFiltersResetN">0</span>)</button>
+          </div>
+          <div class="cfm-filters-body">
+            <div id="cfmFilterAvailRow" hidden>
+              <label class="cfm-check"><input type="checkbox" id="cfmAvailOnly" /><span data-i18n="availOnly">Alleen beschikbaar</span></label>
+            </div>
+            <div id="cfmPowerSection" class="cfm-filter-section" hidden>
+              <div class="cfm-filter-sectitle" data-i18n="powerSection">Laadvermogen</div>
+              <div class="cfm-tier-list">
+                <label class="cfm-tier-row">
+                  <span class="cfm-tier-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l3-3M4 13l3-3M4 18l3-3"/><path d="M15 3 8 13h5l-2 8 9-11h-6z"/></svg></span>
+                  <span class="cfm-tier-txt"><b data-i18n="powerUltra">Ultrasnel</b><i data-i18n="powerUltraRange">200+ kW</i></span>
+                  <input type="checkbox" class="cfm-power-check" data-tier="ultra" />
+                </label>
+                <label class="cfm-tier-row">
+                  <span class="cfm-tier-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l3-3M4 15.5l3-3"/><path d="M15 3 8 13h5l-2 8 9-11h-6z"/></svg></span>
+                  <span class="cfm-tier-txt"><b data-i18n="powerVeryfast">Zeer snel</b><i data-i18n="powerVeryfastRange">100–199 kW</i></span>
+                  <input type="checkbox" class="cfm-power-check" data-tier="veryfast" />
+                </label>
+                <label class="cfm-tier-row">
+                  <span class="cfm-tier-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3 8 13h5l-2 8 9-11h-6z"/></svg></span>
+                  <span class="cfm-tier-txt"><b data-i18n="powerFast">Snel</b><i data-i18n="powerFastRange">23–99 kW</i></span>
+                  <input type="checkbox" class="cfm-power-check" data-tier="fast" />
+                </label>
+                <label class="cfm-tier-row">
+                  <span class="cfm-tier-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="13" height="8" rx="2"/><path d="M20 11v4M9 9V6M13 9V6"/></svg></span>
+                  <span class="cfm-tier-txt"><b data-i18n="powerSlow">Langzaam</b><i data-i18n="powerSlowRange">3–22 kW</i></span>
+                  <input type="checkbox" class="cfm-power-check" data-tier="slow" />
+                </label>
+              </div>
+            </div>
+            <div id="cfmConnSection" class="cfm-filter-section" hidden>
+              <div class="cfm-filter-sectitle" data-i18n="connSection">Stekkers</div>
+              <div class="cfm-conn-grid">
+                <label class="cfm-conn-tile">
+                  <input type="checkbox" class="cfm-conn-check" data-conn="T2" />
+                  <span class="cfm-conn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3M16 3v3"/><circle cx="12" cy="13" r="8"/><circle cx="9" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="14.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="16" r=".9" fill="currentColor" stroke="none"/><circle cx="16" cy="14.5" r=".9" fill="currentColor" stroke="none"/></svg></span>
+                  <span data-i18n="connT2Lbl">Type 2</span>
+                  <em class="cfm-conn-check-mark"></em>
+                </label>
+                <label class="cfm-conn-tile">
+                  <input type="checkbox" class="cfm-conn-check" data-conn="CCS" />
+                  <span class="cfm-conn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><circle cx="9.5" cy="7" r=".8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7" r=".8" fill="currentColor" stroke="none"/><circle cx="8" cy="10.5" r=".8" fill="currentColor" stroke="none"/><circle cx="12" cy="11.5" r=".8" fill="currentColor" stroke="none"/><circle cx="16" cy="10.5" r=".8" fill="currentColor" stroke="none"/><circle cx="9.5" cy="18" r="1.6"/><circle cx="14.5" cy="18" r="1.6"/></svg></span>
+                  <span data-i18n="connCCSLbl">CCS</span>
+                  <em class="cfm-conn-check-mark"></em>
+                </label>
+                <label class="cfm-conn-tile">
+                  <input type="checkbox" class="cfm-conn-check" data-conn="CHADEMO" />
+                  <span class="cfm-conn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v4M18 3v4"/><circle cx="12" cy="13" r="8"/><circle cx="9" cy="11" r="1.4"/><circle cx="15" cy="11" r="1.4"/><path d="M9 16.5h6"/></svg></span>
+                  <span data-i18n="connCHADEMOLbl">CHAdeMO</span>
+                  <em class="cfm-conn-check-mark"></em>
+                </label>
+                <label class="cfm-conn-tile">
+                  <input type="checkbox" class="cfm-conn-check" data-conn="T1" />
+                  <span class="cfm-conn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><circle cx="9" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r=".9" fill="currentColor" stroke="none"/><path d="M19 12h2"/></svg></span>
+                  <span data-i18n="connT1Lbl">Type 1</span>
+                  <em class="cfm-conn-check-mark"></em>
+                </label>
+                <label class="cfm-conn-tile">
+                  <input type="checkbox" class="cfm-conn-check" data-conn="SCHUKO" />
+                  <span class="cfm-conn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="9.3" cy="11" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.7" cy="11" r="1.3" fill="currentColor" stroke="none"/><path d="M9 16.5a3 3 0 0 1 6 0"/></svg></span>
+                  <span data-i18n="connSCHUKOLbl">Schuko</span>
+                  <em class="cfm-conn-check-mark"></em>
+                </label>
+              </div>
+            </div>
+            <div id="cfmFuelSection" class="cfm-filter-section" hidden>
+              <div class="cfm-filter-sectitle" data-i18n="fuelSection">Brandstof</div>
+              <select id="cfmFuelKind" class="cfm-mini-select" style="width:100%">
+                <option value="" data-i18n="fuelAny">Alle brandstof</option>
+                <option value="diesel" data-i18n="fuelDiesel">Diesel</option>
+                <option value="octane_95" data-i18n="fuelE95">Euro 95 / E10</option>
+                <option value="octane_98" data-i18n="fuelE98">Super 98 / E5</option>
+                <option value="lpg" data-i18n="fuelLpg">LPG</option>
+                <option value="cng" data-i18n="fuelCng">CNG</option>
+                <option value="hgv_diesel" data-i18n="fuelHgv">Truck diesel</option>
+              </select>
+              <label class="cfm-check" style="margin-top:10px"><input type="checkbox" id="cfmOpenNow" /><span data-i18n="openNow">Nu geopend</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
       <button id="cfmVehBtn" class="cfm-icon-btn is-on" data-i18n-title="toggleVehicles" title="Voertuigen tonen/verbergen" aria-pressed="true">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v6a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H7.5v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7.5" cy="15" r="1.2" fill="currentColor"/><circle cx="16.5" cy="15" r="1.2" fill="currentColor"/></svg>
       </button>
@@ -44,19 +135,43 @@
       </button>
       <button id="cfmRefreshBtn" class="cfm-icon-btn" data-i18n-title="refresh" title="Verversen">&#8635;</button>
       <div class="cfm-poi-wrap">
-        <button id="cfmPoiBtn" class="cfm-icon-btn cfm-poi-toggle" data-i18n-title="poiBtn" title="POI">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 16.9l-5.9 3.7 1.6-6.7-5.2-4.5 6.8-.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <button id="cfmPoiBtn" class="cfm-icon-btn cfm-poi-toggle" data-i18n-title="poiBtn" title="Favorieten">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.7 3.3a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8l-3 3 .6 5.2-1.4 1.4-4-4-5 5-1.4-1.4 5-5-4-4 1.4-1.4 5.2.6 3-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 15 4 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </button>
         <div class="cfm-poi-panel" id="cfmPoiPanel" hidden>
-          <div class="cfm-poi-head" data-i18n="poiHead">Eigen locaties (POI)</div>
+          <div class="cfm-poi-head" data-i18n="poiHead">Favorieten</div>
           <div class="cfm-poi-searchrow">
             <input type="text" id="cfmPoiQuery" class="cfm-poi-input" data-i18n-placeholder="poiSearchPh" placeholder="Zoek adres of bedrijfsnaam…" />
             <button id="cfmPoiSearchBtn" class="cfm-btn primary cfm-poi-searchbtn" data-i18n="poiSearch">Zoek</button>
           </div>
           <div class="cfm-poi-results" id="cfmPoiResults"></div>
-          <div class="cfm-poi-listhead" data-i18n="poiListHead">Jouw POI's</div>
-          <div class="cfm-poi-list" id="cfmPoiList"><p class="cfm-poi-empty" data-i18n="poiEmpty">Nog geen POI's toegevoegd.</p></div>
+          <div class="cfm-poi-listhead" data-i18n="poiListHead">Jouw favorieten</div>
+          <div class="cfm-poi-list" id="cfmPoiList"><p class="cfm-poi-empty" data-i18n="poiEmpty">Nog geen favorieten toegevoegd.</p></div>
           <p class="cfm-poi-attrib" data-i18n="poiAttrib">Zoeken via OpenStreetMap Nominatim (gratis, geen sleutel) — geen Google Maps.</p>
+        </div>
+      </div>
+      <div class="cfm-bulk-wrap">
+        <button id="cfmBulkBtn" class="cfm-icon-btn" data-i18n-title="bulkSend" title="Bulk-bericht">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17 15l4 3-4 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="cfm-poi-panel cfm-bulk-panel" id="cfmBulkPanel" hidden>
+          <div class="cfm-poi-head" data-i18n="bulkSendTitle">Stuur laadlocatie naar meerdere voertuigen</div>
+          <div class="cfm-bulk-thresholdrow">
+            <span data-i18n="bulkThreshold">Onder</span>
+            <input type="range" id="cfmBulkThreshold" min="5" max="80" step="5" value="30" />
+            <span class="cfm-slider-val" id="cfmBulkThresholdVal">30%</span>
+          </div>
+          <div class="cfm-bulk-selectall">
+            <label class="cfm-check">
+              <input type="checkbox" id="cfmBulkAll" />
+              <span data-i18n="bulkSelectAll">Alles selecteren</span>
+            </label>
+          </div>
+          <div class="cfm-bulk-list" id="cfmBulkList"></div>
+          <div class="cfm-p-actions" style="margin-top:8px">
+            <button class="cfm-btn primary" id="cfmBulkSendBtn"><span data-i18n="send">Verstuur</span></button>
+          </div>
+          <div class="cfm-msg-note" id="cfmBulkNote"></div>
         </div>
       </div>
       <button id="cfmLangBtn" class="cfm-toggle-btn" data-i18n-title="language" title="Taal">
@@ -70,46 +185,8 @@
     </div>
   </header>
 
-  <!-- ===== Filter rail ===== -->
-  <div class="cfm-filters" id="cfmFilters">
-    <div class="cfm-filter-group" id="cfmChargeFilters" hidden>
-      <label class="cfm-check">
-        <input type="checkbox" id="cfmAvailOnly" />
-        <span data-i18n="availOnly">Alleen beschikbaar</span>
-      </label>
-      <label class="cfm-check">
-        <input type="checkbox" id="cfmFastOnly" />
-        <span data-i18n="fastOnly">Alleen snelladen (&ge;50 kW)</span>
-      </label>
-      <div class="cfm-slider-inline">
-        <span data-i18n="minPower">Min. vermogen</span>
-        <input type="range" id="cfmMinPower" min="0" max="150" step="10" value="0" />
-        <span class="cfm-slider-val" id="cfmMinPowerVal">0 kW</span>
-      </div>
-      <select id="cfmConnector" class="cfm-mini-select" data-i18n-title="connector" title="Stekker">
-        <option value="" data-i18n="connAny">Alle stekkers</option>
-        <option value="T2">Type 2</option>
-        <option value="CCS">CCS</option>
-        <option value="CHADEMO">CHAdeMO</option>
-        <option value="T1">Type 1</option>
-        <option value="SCHUKO">Schuko</option>
-      </select>
-    </div>
-    <div class="cfm-filter-group" id="cfmFuelFilters" hidden>
-      <select id="cfmFuelKind" class="cfm-mini-select" data-i18n-title="fuelKind" title="Brandstof">
-        <option value="" data-i18n="fuelAny">Alle brandstof</option>
-        <option value="diesel" data-i18n="fuelDiesel">Diesel</option>
-        <option value="octane_95" data-i18n="fuelE95">Euro 95 / E10</option>
-        <option value="octane_98" data-i18n="fuelE98">Super 98 / E5</option>
-        <option value="lpg" data-i18n="fuelLpg">LPG</option>
-        <option value="cng" data-i18n="fuelCng">CNG</option>
-        <option value="hgv_diesel" data-i18n="fuelHgv">Truck diesel</option>
-      </select>
-      <label class="cfm-check">
-        <input type="checkbox" id="cfmOpenNow" />
-        <span data-i18n="openNow">Nu geopend</span>
-      </label>
-    </div>
+  <!-- ===== Status row ===== -->
+  <div class="cfm-status-row">
     <div class="cfm-count" id="cfmCount"></div>
   </div>
 
@@ -161,6 +238,6 @@
   };
 </script>
 
-<script type="text/javascript" src="main.js?v=20260911d"></script>
+<script type="text/javascript" src="main.js?v=20260918b"></script>
 </body>
 </html>

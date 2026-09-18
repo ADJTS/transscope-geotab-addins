@@ -94,8 +94,7 @@
       myLocation: "Mijn locatie", locFail: "Kon je locatie niet bepalen — wagenpark getoond",
       vehiclesOnly: "Alleen voertuigen",
       refresh: "Verversen", language: "Taal", theme: "Thema",
-      availOnly: "Alleen beschikbaar", fastOnly: "Alleen snelladen (\u226550 kW)",
-      minPower: "Min. vermogen", connector: "Stekker", connAny: "Alle stekkers",
+      availOnly: "Alleen beschikbaar", connAny: "Alle stekkers",
       fuelKind: "Brandstof", fuelAny: "Alle brandstof", fuelDiesel: "Diesel",
       fuelE95: "Euro 95 / E10", fuelE98: "Super 98 / E5", fuelLpg: "LPG", fuelCng: "CNG",
       fuelHgv: "Truck diesel", openNow: "Nu geopend",
@@ -148,15 +147,28 @@
       alertBody: "{veh} is nu {km} km van {name}",
       alertHint: "Werkt zolang deze pagina open staat in je browser — controleert elke paar minuten en toont een melding.",
       save: "Opslaan",
-      poiBtn: "POI", poiHead: "Eigen locaties (POI)", poiSearchPh: "Zoek adres of bedrijfsnaam…",
-      poiSearch: "Zoek", poiListHead: "Jouw POI's", poiEmpty: "Nog geen POI's toegevoegd.",
+      poiBtn: "Favorieten", poiHead: "Favorieten", poiSearchPh: "Zoek adres of bedrijfsnaam…",
+      poiSearch: "Zoek", poiListHead: "Jouw favorieten", poiEmpty: "Nog geen favorieten toegevoegd.",
       poiAttrib: "Zoeken via OpenStreetMap Nominatim (gratis, geen sleutel) — geen Google Maps.",
       poiSearching: "Zoeken…", poiNoResults: "Niets gevonden. Probeer het adres in plaats van de bedrijfsnaam.",
-      poiSearchFail: "Zoeken mislukt — probeer opnieuw.", poiAdd: "Toevoegen als POI",
-      poiAdded: "★ {name} toegevoegd", poiKicker: "Eigen locatie",
+      poiSearchFail: "Zoeken mislukt — probeer opnieuw.", poiAdd: "Toevoegen als favoriet",
+      poiAdded: "{name} toegevoegd aan favorieten", poiKicker: "Favoriet",
       poiDelete: "Verwijderen", poiDeleteConfirm: "\"{name}\" verwijderen?",
-      alertTarget: "Doel", alertTargetStation: "Laadpunt / tankstation", alertTargetPoi: "Mijn POI's",
-      alertPoiTitle: "POI dichtbij"
+      alertTarget: "Doel", alertTargetStation: "Laadpunt / tankstation", alertTargetPoi: "Mijn favorieten",
+      alertPoiTitle: "Favoriet dichtbij",
+      filtersBtn: "Filters", filtersResetLbl: "Filters opnieuw instellen",
+      powerSection: "Laadvermogen", connSection: "Stekkers", fuelSection: "Brandstof",
+      powerUltra: "Ultrasnel", powerVeryfast: "Zeer snel", powerFast: "Snel", powerSlow: "Langzaam",
+      powerUltraRange: "200+ kW", powerVeryfastRange: "100–199 kW", powerFastRange: "23–99 kW", powerSlowRange: "3–22 kW",
+      connT2Lbl: "Type 2", connCCSLbl: "CCS", connCHADEMOLbl: "CHAdeMO", connT1Lbl: "Type 1", connSCHUKOLbl: "Schuko",
+      reportBroken: "Meld storing", unreportBroken: "Storing hersteld — herstel melden",
+      reportedBroken: "Storing gemeld · {t} geleden — valt buiten \"dichtstbijzijnde\" tot iemand het herstel meldt",
+      reportedBrokenToast: "Storing bij {name} gemeld ✓",
+      bulkSend: "Bulk-bericht", bulkSendTitle: "Stuur laadlocatie naar meerdere voertuigen",
+      bulkThreshold: "Onder", bulkNoVehicles: "Geen voertuigen onder deze drempel.",
+      bulkSelectAll: "Alles selecteren", bulkSendBtn: "Verstuur naar {n} voertuigen",
+      bulkSending: "Versturen…", bulkDone: "{ok} van {n} verzonden", bulkNoneSelected: "Selecteer minstens één voertuig.",
+      bulkNoTarget: "Geen locatie gevonden voor dit voertuig — overgeslagen."
     },
     en: {
       eyebrow: "Charge & fuel", title: "Charge & Fuel Map",
@@ -165,8 +177,7 @@
       myLocation: "My location", locFail: "Couldn't get your location — showing fleet instead",
       vehiclesOnly: "Vehicles only",
       refresh: "Refresh", language: "Language", theme: "Theme",
-      availOnly: "Available only", fastOnly: "Fast charging only (\u226550 kW)",
-      minPower: "Min. power", connector: "Connector", connAny: "Any connector",
+      availOnly: "Available only", connAny: "Any connector",
       fuelKind: "Fuel", fuelAny: "Any fuel", fuelDiesel: "Diesel",
       fuelE95: "Euro 95 / E10", fuelE98: "Super 98 / E5", fuelLpg: "LPG", fuelCng: "CNG",
       fuelHgv: "Truck diesel", openNow: "Open now",
@@ -219,15 +230,28 @@
       alertBody: "{veh} is now {km} km from {name}",
       alertHint: "Works as long as this page stays open in your browser — checks every few minutes and shows a notification.",
       save: "Save",
-      poiBtn: "POI", poiHead: "Custom locations (POI)", poiSearchPh: "Search address or business name…",
-      poiSearch: "Search", poiListHead: "Your POIs", poiEmpty: "No POIs added yet.",
+      poiBtn: "Favorites", poiHead: "Favorites", poiSearchPh: "Search address or business name…",
+      poiSearch: "Search", poiListHead: "Your favorites", poiEmpty: "No favorites added yet.",
       poiAttrib: "Search via OpenStreetMap Nominatim (free, no key) — not Google Maps.",
       poiSearching: "Searching…", poiNoResults: "Nothing found. Try the street address instead of the business name.",
-      poiSearchFail: "Search failed — try again.", poiAdd: "Add as POI",
-      poiAdded: "★ {name} added", poiKicker: "Custom location",
+      poiSearchFail: "Search failed — try again.", poiAdd: "Add as favorite",
+      poiAdded: "{name} added to favorites", poiKicker: "Favorite",
       poiDelete: "Delete", poiDeleteConfirm: "Delete \"{name}\"?",
-      alertTarget: "Target", alertTargetStation: "Charging point / fuel station", alertTargetPoi: "My POIs",
-      alertPoiTitle: "POI nearby"
+      alertTarget: "Target", alertTargetStation: "Charging point / fuel station", alertTargetPoi: "My favorites",
+      alertPoiTitle: "Favorite nearby",
+      filtersBtn: "Filters", filtersResetLbl: "Reset filters",
+      powerSection: "Charging power", connSection: "Connectors", fuelSection: "Fuel",
+      powerUltra: "Ultra-fast", powerVeryfast: "Very fast", powerFast: "Fast", powerSlow: "Slow",
+      powerUltraRange: "200+ kW", powerVeryfastRange: "100–199 kW", powerFastRange: "23–99 kW", powerSlowRange: "3–22 kW",
+      connT2Lbl: "Type 2", connCCSLbl: "CCS", connCHADEMOLbl: "CHAdeMO", connT1Lbl: "Type 1", connSCHUKOLbl: "Schuko",
+      reportBroken: "Report fault", unreportBroken: "Fixed — clear fault report",
+      reportedBroken: "Fault reported · {t} ago — excluded from \"nearest\" until someone clears it",
+      reportedBrokenToast: "Fault reported at {name} ✓",
+      bulkSend: "Bulk message", bulkSendTitle: "Send charging location to multiple vehicles",
+      bulkThreshold: "Below", bulkNoVehicles: "No vehicles under this threshold.",
+      bulkSelectAll: "Select all", bulkSendBtn: "Send to {n} vehicles",
+      bulkSending: "Sending…", bulkDone: "{ok} of {n} sent", bulkNoneSelected: "Select at least one vehicle.",
+      bulkNoTarget: "No location found for this vehicle — skipped."
     }
   };
   function t(key, vars) {
@@ -608,11 +632,24 @@
     var availTimer = null;
 
     var filters = {
-      type: "none", availOnly: false, fastOnly: false, minPower: 0,
-      connector: "", fuelKind: "", openNow: false
+      type: "none", availOnly: false, powerTiers: [],
+      connectors: [], fuelKind: "", openNow: false
+    };
+    var POWER_TIER_RANGE = {
+      ultra: function (kw) { return kw >= 200; },
+      veryfast: function (kw) { return kw >= 100 && kw < 200; },
+      fast: function (kw) { return kw >= 23 && kw < 100; },
+      slow: function (kw) { return kw >= 3 && kw < 23; }
     };
     function wantCharge() { return filters.type === "all" || filters.type === "charge"; }
     function wantFuel() { return filters.type === "all" || filters.type === "fuel"; }
+    function activeFilterCount() {
+      var n = filters.availOnly ? 1 : 0;
+      n += filters.powerTiers.length + filters.connectors.length;
+      if (filters.fuelKind) n++;
+      if (filters.openNow) n++;
+      return n;
+    }
 
     var GLYPH = {
       bolt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
@@ -829,19 +866,19 @@
       return best;
     }
 
-    /* ---- Custom POIs: search (OpenStreetMap Nominatim, free/keyless — NOT
-       Google, there's no free keyless Google search) and drop a bronze star.
+    /* ---- Favorites: search (OpenStreetMap Nominatim, free/keyless — NOT
+       Google, there's no free keyless Google search) and drop a bronze pin.
        Persisted in localStorage, so they're private to this browser/viewer -
-       there's no shared/team POI list yet. ---------------------------------- */
+       there's no shared/team favorites list yet. ---------------------------------- */
     var POIS_KEY = "cfmPois";
-    var POI_STAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.7L12 16.9l-5.9 3.7 1.6-6.7-5.2-4.5 6.8-.6z"/></svg>';
+    var POI_PIN_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2.6c1-1 2.6-1 3.6 0l4.3 4.3c1 1 1 2.6 0 3.6l-3.2 3.2 1 6.5-1.8 1.8-4.9-4.9-5.4 5.4-1.8-1.8 5.4-5.4-4.9-4.9 1.8-1.8 6.5 1 3.2-3.2Z"/></svg>';
     var poiSearchSeq = 0;
     function loadPois() { try { return JSON.parse(localStorage.getItem(POIS_KEY) || "[]"); } catch (e) { return []; } }
     function savePois() { try { localStorage.setItem(POIS_KEY, JSON.stringify(pois)); } catch (e) {} }
     function poiIcon() {
       return L.divIcon({
         className: "cfm-divicon",
-        html: '<div class="cfm-poi-marker"><span class="cfm-poi-marker-body">' + POI_STAR_SVG + "</span></div>",
+        html: '<div class="cfm-poi-marker"><span class="cfm-poi-marker-body">' + POI_PIN_SVG + "</span></div>",
         iconSize: [30, 34], iconAnchor: [15, 32], popupAnchor: [0, -30]
       });
     }
@@ -902,7 +939,7 @@
       if (!el) return;
       if (!pois.length) { el.innerHTML = '<p class="cfm-poi-empty">' + esc(t("poiEmpty")) + "</p>"; return; }
       el.innerHTML = pois.map(function (p) {
-        return '<div class="cfm-poi-item"><span class="cfm-poi-item-star">' + POI_STAR_SVG + "</span>" +
+        return '<div class="cfm-poi-item"><span class="cfm-poi-item-star">' + POI_PIN_SVG + "</span>" +
           '<div class="cfm-poi-item-main" data-poi-go="' + esc(p.id) + '"><div class="cfm-poi-item-name">' + esc(p.name) + '</div><div class="cfm-poi-item-addr">' + esc(p.address || "") + "</div></div>" +
           '<button class="cfm-poi-del-btn" data-poi-del="' + esc(p.id) + '" title="' + esc(t("poiDelete")) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
       }).join("");
@@ -927,6 +964,128 @@
     function closePoiDropdown() {
       var panel = $("cfmPoiPanel"); if (panel) panel.hidden = true;
       var btn = $("cfmPoiBtn"); if (btn) btn.classList.remove("is-on");
+    }
+
+    /* ---- Filters flyout (Laadvermogen / Stekkers / Brandstof) ---- */
+    function closeFiltersDropdown() {
+      var panel = $("cfmFiltersPanel"); if (panel) panel.hidden = true;
+      var btn = $("cfmFiltersBtn"); if (btn) btn.classList.remove("is-on");
+    }
+    function updateFiltersBadge() {
+      var n = activeFilterCount();
+      var badge = $("cfmFiltersBadge");
+      badge.hidden = n === 0;
+      badge.textContent = n;
+      var reset = $("cfmFiltersReset");
+      reset.hidden = n === 0;
+      $("cfmFiltersResetN").textContent = n;
+    }
+    function onFiltersChanged() {
+      updateFiltersBadge();
+      renderMarkers();
+    }
+    function resetFilters() {
+      filters.availOnly = false; filters.powerTiers = []; filters.connectors = [];
+      filters.fuelKind = ""; filters.openNow = false;
+      $("cfmAvailOnly").checked = false;
+      $("cfmFuelKind").value = "";
+      $("cfmOpenNow").checked = false;
+      Array.prototype.forEach.call(document.querySelectorAll(".cfm-power-check, .cfm-conn-check"), function (c) { c.checked = false; });
+      onFiltersChanged();
+    }
+
+    /* ---- bulk message: send nearest charge/fuel location to several
+       low-battery/low-fuel vehicles at once. Fetches fresh charge/fuel data
+       around each selected vehicle's own position (same boxAround pattern
+       as proximity alerts) before sending, then sends one Location
+       TextMessage per vehicle in sequence. ---- */
+    function closeBulkDropdown() {
+      var panel = $("cfmBulkPanel"); if (panel) panel.hidden = true;
+      var btn = $("cfmBulkBtn"); if (btn) btn.classList.remove("is-on");
+    }
+    function bulkThresholdVal() { return Number($("cfmBulkThreshold").value) || 30; }
+    function bulkCandidates() {
+      var thr = bulkThresholdVal();
+      return vehicles.filter(function (v) {
+        var val = v.soc != null ? v.soc : v.fuel;
+        return val != null && val < thr;
+      }).sort(function (a, b) {
+        var av = a.soc != null ? a.soc : a.fuel, bv = b.soc != null ? b.soc : b.fuel;
+        return av - bv;
+      });
+    }
+    function renderBulkList() {
+      var list = bulkCandidates();
+      var container = $("cfmBulkList");
+      if (!list.length) {
+        container.innerHTML = '<p class="cfm-bulk-empty">' + esc(t("bulkNoVehicles")) + "</p>";
+        $("cfmBulkAll").checked = false;
+        return;
+      }
+      container.innerHTML = list.map(function (v) {
+        var val = v.soc != null ? v.soc : v.fuel;
+        return '<label class="cfm-bulk-row"><input type="checkbox" class="cfm-bulk-check" data-vid="' + esc(v.id) + '" checked />' +
+          '<span class="cfm-bulk-row-main"><span class="cfm-bulk-row-name">' + esc(v.name) + "</span></span>" +
+          '<span class="cfm-bulk-row-pct ' + battClass(val) + '">' + Math.round(val) + "%</span></label>";
+      }).join("");
+      $("cfmBulkAll").checked = true;
+    }
+    function sendLocationMessage(v, target, text) {
+      return new Promise(function (resolve) {
+        if (!apiRef) { resolve({ ok: false, reason: "needsLive" }); return; }
+        apiRef.getSession(function (credentials) {
+          apiRef.call("Get", { typeName: "User", search: { name: credentials.userName } }, function (users) {
+            var me = users && users[0];
+            var entity = {
+              isDirectionToVehicle: true,
+              device: { id: v.id },
+              messageContent: { contentType: "Location", message: text, address: (target.s.name + (target.s.address ? " — " + target.s.address : "")).slice(0, 80), latitude: Number(target.s.lat), longitude: Number(target.s.lng) },
+              user: me ? { id: me.id } : undefined
+            };
+            apiRef.call("Add", { typeName: "TextMessage", entity: entity }, function () {
+              resolve({ ok: true });
+            }, function (err) { resolve({ ok: false, reason: apiErrText(err) }); });
+          }, function (err) { resolve({ ok: false, reason: apiErrText(err) }); });
+        }, false);
+      });
+    }
+    function runBulkSend() {
+      var checks = Array.prototype.slice.call(document.querySelectorAll(".cfm-bulk-check:checked"));
+      if (!checks.length) { $("cfmBulkNote").textContent = t("bulkNoneSelected"); return; }
+      if (!apiRef) { $("cfmBulkNote").textContent = t("msgNeedsLive"); return; }
+      var ids = checks.map(function (c) { return c.getAttribute("data-vid"); });
+      var selected = vehicles.filter(function (v) { return ids.indexOf(String(v.id)) !== -1; });
+      var btn = $("cfmBulkSendBtn");
+      btn.disabled = true;
+      $("cfmBulkNote").textContent = t("bulkSending");
+      var okCount = 0, total = selected.length;
+      var fetches = selected.map(function (v) {
+        var kind = v.soc != null ? "charge" : "fuel";
+        var bx = boxAround(v, 0.15);
+        return (kind === "charge" ? fetchCharge(bx) : fetchFuel(bx))
+          .then(function (r) { mergeCache(kind, r.list); })
+          .catch(function () {})
+          .then(function () { return { v: v, kind: kind }; });
+      });
+      Promise.all(fetches).then(function (items) {
+        var chain = Promise.resolve();
+        items.forEach(function (item) {
+          chain = chain.then(function () {
+            var target = nearest(item.kind, [item.v.lat, item.v.lng]);
+            if (!target) return;
+            var text = t("msgDefault", { veh: item.v.name });
+            return sendLocationMessage(item.v, target, text).then(function (res) {
+              if (res.ok) okCount++;
+            });
+          });
+        });
+        chain.then(function () {
+          btn.disabled = false;
+          $("cfmBulkNote").textContent = t("bulkDone", { ok: okCount, n: total });
+          toast(t("bulkDone", { ok: okCount, n: total }));
+          renderMarkers();
+        });
+      });
     }
     function openPoiPanel(id) {
       var p = null;
@@ -1314,10 +1473,13 @@
     /* ---- filtering ---- */
     function passCharge(s) {
       if (filters.availOnly && stationStatus(s) !== "free") return false;
-      if (filters.fastOnly && !s.isFast) return false;
-      if (filters.minPower && s.maxKw < filters.minPower) return false;
-      if (filters.connector) {
-        var has = s.connectors.some(function (c) { return c.conn === filters.connector; });
+      if (filters.powerTiers.length) {
+        var kw = s.maxKw || 0;
+        var inTier = filters.powerTiers.some(function (tier) { return POWER_TIER_RANGE[tier] && POWER_TIER_RANGE[tier](kw); });
+        if (!inTier) return false;
+      }
+      if (filters.connectors.length) {
+        var has = s.connectors.some(function (c) { return filters.connectors.indexOf(c.conn) !== -1; });
         if (!has) return false;
       }
       return true;
@@ -1360,7 +1522,7 @@
       var cLayers = [], fLayers = [];
       for (var i = 0; i < list.length; i++) {
         var s = list[i];
-        var st = stationStatus(s);
+        var st = (s.kind === "charge" && isBroken(s.id)) ? "broken" : stationStatus(s);
         var mk = L.marker([s.lat, s.lng], { icon: markerIcon(st === "fuel" ? "fuel" : st, s.kind === "charge" && s.isFast) });
         mk.__sid = s.id; mk.__skind = s.kind;
         mk.on("click", (function (station) { return function () { openStationPanel(station); }; })(s));
@@ -1438,11 +1600,16 @@
     function openStationPanel(s) {
       selectedVehId = null; clearRoute(); renderVehicles();
       var st = stationStatus(s);
+      var brokenInfo = s.kind === "charge" ? loadBroken()[s.id] : null;
       var html = "";
       html += '<div class="cfm-p-kicker">' + esc(s.kind === "charge" ? t("chargePoint") : t("fuelStation")) +
               (s.source ? " \u00b7 " + esc(s.source) : "") + "</div>";
       html += '<div class="cfm-p-title">' + esc(s.name) + "</div>";
       if (s.address) html += '<div class="cfm-p-addr">' + esc(s.address) + "</div>";
+
+      if (brokenInfo) {
+        html += '<div class="cfm-broken-banner">' + esc(t("reportedBroken", { t: relTime(brokenInfo.reportedAt) })) + "</div>";
+      }
 
       if (s.kind === "charge") {
         var badge = st === "free"
@@ -1473,7 +1640,20 @@
         }
       }
       html += '<div class="cfm-p-actions">' + navBtn(s) + geotabMapBtn(s) + "</div>";
+      if (s.kind === "charge") {
+        html += '<div class="cfm-p-actions" style="margin-top:6px">' +
+          (brokenInfo
+            ? '<button class="cfm-btn" id="cfmUnreportBtn">' + esc(t("unreportBroken")) + "</button>"
+            : '<button class="cfm-btn is-warn" id="cfmReportBtn">' + esc(t("reportBroken")) + "</button>") +
+          "</div>";
+      }
       openPanel(html);
+      if (s.kind === "charge") {
+        var reportBtn = $("cfmReportBtn");
+        if (reportBtn) reportBtn.onclick = function () { reportBroken(s); openStationPanel(s); toast(t("reportedBrokenToast", { name: s.name })); };
+        var unreportBtn = $("cfmUnreportBtn");
+        if (unreportBtn) unreportBtn.onclick = function () { unreportBroken(s.id); openStationPanel(s); };
+      }
       map.panTo([s.lat, s.lng], { animate: true });
     }
     function pRow(k, v) { return '<div class="cfm-p-row"><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "</span></div>"; }
@@ -1489,7 +1669,7 @@
       var pool = cache[kind];
       for (var id in pool) {
         var s = pool[id];
-        if (kind === "charge" && !passCharge(s)) continue;
+        if (kind === "charge" && (!passCharge(s) || isBroken(s.id))) continue;
         if (kind === "fuel" && !passFuel(s)) continue;
         var d = haversineKm(from, [s.lat, s.lng]);
         if (d < bd) { bd = d; best = s; }
@@ -1595,7 +1775,7 @@
         '<label class="cfm-check" style="margin-bottom:10px"><input type="checkbox" id="cfmAlertEnabled"' + (alertCfg.enabled ? " checked" : "") + '> <span data-i18n="alertEnable">Meld me als dit voertuig in de buurt komt</span></label>' +
         '<div class="cfm-alert-row"><span data-i18n="alertTarget">Doel</span><select id="cfmAlertTarget" class="cfm-mini-select">' +
         '<option value="station"' + (alertCfg.target !== "poi" ? " selected" : "") + ' data-i18n="alertTargetStation">Laadpunt / tankstation</option>' +
-        '<option value="poi"' + (alertCfg.target === "poi" ? " selected" : "") + ' data-i18n="alertTargetPoi">Mijn POI’s</option>' +
+        '<option value="poi"' + (alertCfg.target === "poi" ? " selected" : "") + ' data-i18n="alertTargetPoi">Mijn favorieten</option>' +
         "</select></div>" +
         '<div class="cfm-alert-row"><span data-i18n="alertDistance">Afstand</span><input type="number" id="cfmAlertKm" min="1" max="20" step="1" value="' + (alertCfg.km || 3) + '" class="cfm-alert-km" /> km</div>' +
         '<div class="cfm-alert-row" id="cfmAlertModeRow"' + (v.soc == null || alertCfg.target === "poi" ? " hidden" : "") + '><span data-i18n="alertConnector">Stekker</span><select id="cfmAlertMode" class="cfm-mini-select">' +
@@ -1755,10 +1935,43 @@
     function loadAlertSettings() { try { return JSON.parse(localStorage.getItem(ALERTS_KEY) || "{}"); } catch (e) { return {}; } }
     function saveAlertSettings(obj) { try { localStorage.setItem(ALERTS_KEY, JSON.stringify(obj)); } catch (e) {} }
     function boxAround(v, pad) { return { w: v.lng - pad, s: v.lat - pad, e: v.lng + pad, n: v.lat + pad }; }
+
+    /* ---- driver-reported "storing" (broken/blocked charge point) ----
+       Per-browser only, like POIs/alerts - there's no shared backend, so a
+       report made on one manager's laptop isn't visible to another manager
+       or to Drive. Reports auto-expire after BROKEN_TTL_MS so a real fix
+       doesn't stay hidden forever if nobody remembers to clear it. */
+    var BROKEN_KEY = "cfmBrokenStations";
+    var BROKEN_TTL_MS = 24 * 3600000;
+    function loadBroken() {
+      var out = {};
+      try { out = JSON.parse(localStorage.getItem(BROKEN_KEY) || "{}"); } catch (e) { return {}; }
+      var now = Date.now(), changed = false;
+      for (var id in out) {
+        if (!out[id] || now - out[id].reportedAt > BROKEN_TTL_MS) { delete out[id]; changed = true; }
+      }
+      if (changed) saveBroken(out);
+      return out;
+    }
+    function saveBroken(obj) { try { localStorage.setItem(BROKEN_KEY, JSON.stringify(obj)); } catch (e) {} }
+    function isBroken(id) { return !!loadBroken()[id]; }
+    function reportBroken(s) {
+      var all = loadBroken();
+      all[s.id] = { reportedAt: Date.now(), name: s.name };
+      saveBroken(all);
+      renderMarkers();
+    }
+    function unreportBroken(id) {
+      var all = loadBroken();
+      delete all[id];
+      saveBroken(all);
+      renderMarkers();
+    }
     function nearestForAlert(kind, from, mode) {
       var best = null, bd = Infinity, pool = cache[kind];
       for (var id in pool) {
         var s = pool[id];
+        if (kind === "charge" && isBroken(s.id)) continue;
         if (kind === "charge" && mode && mode !== "any") {
           var hasType = s.connectors.some(function (c) { return mode === "dc" ? c.powerType === "DC" : c.powerType === "AC"; });
           if (!hasType) continue;
@@ -1921,8 +2134,14 @@
       filters.type = type;
       var segs = $("cfmTypeSeg").children;
       for (var i = 0; i < segs.length; i++) segs[i].classList.toggle("is-active", segs[i].getAttribute("data-type") === type);
-      $("cfmChargeFilters").hidden = type === "fuel" || type === "none";
-      $("cfmFuelFilters").hidden = type === "charge" || type === "none";
+      var showCharge = type === "all" || type === "charge";
+      var showFuel = type === "all" || type === "fuel";
+      $("cfmFilterAvailRow").hidden = !showCharge;
+      $("cfmPowerSection").hidden = !showCharge;
+      $("cfmConnSection").hidden = !showCharge;
+      $("cfmFuelSection").hidden = !showFuel;
+      $("cfmFiltersBtn").hidden = type === "none";
+      if (type === "none") closeFiltersDropdown();
       onMove();
     }
 
@@ -1948,13 +2167,37 @@
         if (willOpen) setTimeout(function () { $("cfmPoiQuery").focus(); }, 30);
       });
       document.addEventListener("click", function (e) {
-        var wrap = document.querySelector(".cfm-poi-wrap");
-        if (wrap && !wrap.contains(e.target)) closePoiDropdown();
+        var poiWrap = document.querySelector(".cfm-poi-wrap");
+        if (poiWrap && !poiWrap.contains(e.target)) closePoiDropdown();
+        var bulkWrap = document.querySelector(".cfm-bulk-wrap");
+        if (bulkWrap && !bulkWrap.contains(e.target)) closeBulkDropdown();
+        var filtersWrap = document.querySelector(".cfm-filters-wrap");
+        if (filtersWrap && !filtersWrap.contains(e.target)) closeFiltersDropdown();
       });
       $("cfmPoiPanel").addEventListener("click", function (e) { e.stopPropagation(); });
       $("cfmPoiSearchBtn").addEventListener("click", runPoiSearch);
       $("cfmPoiQuery").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); runPoiSearch(); } });
       $("cfmPoiQuery").addEventListener("input", debounce(runPoiSearch, 700));
+      $("cfmBulkBtn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        var panel = $("cfmBulkPanel"), willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        this.classList.toggle("is-on", willOpen);
+        if (willOpen) { $("cfmBulkNote").textContent = ""; renderBulkList(); }
+      });
+      $("cfmBulkPanel").addEventListener("click", function (e) { e.stopPropagation(); });
+      $("cfmBulkThreshold").addEventListener("input", function () {
+        $("cfmBulkThresholdVal").textContent = this.value + "%";
+        renderBulkList();
+      });
+      $("cfmBulkAll").addEventListener("change", function () {
+        var checked = this.checked;
+        Array.prototype.forEach.call(document.querySelectorAll(".cfm-bulk-check"), function (c) { c.checked = checked; });
+      });
+      $("cfmBulkList").addEventListener("change", function (e) {
+        if (e.target.classList.contains("cfm-bulk-check") && !e.target.checked) $("cfmBulkAll").checked = false;
+      });
+      $("cfmBulkSendBtn").addEventListener("click", runBulkSend);
       $("cfmLangBtn").addEventListener("click", function () {
         LANG = LANG === "nl" ? "en" : "nl";
         try { localStorage.setItem(LANG_KEY, LANG); } catch (e) {}
@@ -1974,16 +2217,35 @@
       });
       $("cfmPanelClose").addEventListener("click", closePanel);
 
-      $("cfmAvailOnly").addEventListener("change", function () { filters.availOnly = this.checked; renderMarkers(); });
-      $("cfmFastOnly").addEventListener("change", function () { filters.fastOnly = this.checked; renderMarkers(); });
-      $("cfmMinPower").addEventListener("input", function () {
-        filters.minPower = +this.value;
-        $("cfmMinPowerVal").textContent = this.value + " kW";
-        renderMarkers();
+      $("cfmAvailOnly").addEventListener("change", function () { filters.availOnly = this.checked; onFiltersChanged(); });
+      $("cfmFuelKind").addEventListener("change", function () { filters.fuelKind = this.value; onFiltersChanged(); });
+      $("cfmOpenNow").addEventListener("change", function () { filters.openNow = this.checked; onFiltersChanged(); });
+      Array.prototype.forEach.call(document.querySelectorAll(".cfm-power-check"), function (c) {
+        c.addEventListener("change", function () {
+          var tier = this.getAttribute("data-tier");
+          var i = filters.powerTiers.indexOf(tier);
+          if (this.checked && i === -1) filters.powerTiers.push(tier);
+          else if (!this.checked && i !== -1) filters.powerTiers.splice(i, 1);
+          onFiltersChanged();
+        });
       });
-      $("cfmConnector").addEventListener("change", function () { filters.connector = this.value; renderMarkers(); });
-      $("cfmFuelKind").addEventListener("change", function () { filters.fuelKind = this.value; renderMarkers(); });
-      $("cfmOpenNow").addEventListener("change", function () { filters.openNow = this.checked; renderMarkers(); });
+      Array.prototype.forEach.call(document.querySelectorAll(".cfm-conn-check"), function (c) {
+        c.addEventListener("change", function () {
+          var conn = this.getAttribute("data-conn");
+          var i = filters.connectors.indexOf(conn);
+          if (this.checked && i === -1) filters.connectors.push(conn);
+          else if (!this.checked && i !== -1) filters.connectors.splice(i, 1);
+          onFiltersChanged();
+        });
+      });
+      $("cfmFiltersReset").addEventListener("click", resetFilters);
+      $("cfmFiltersBtn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        var panel = $("cfmFiltersPanel"), willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        this.classList.toggle("is-on", willOpen);
+      });
+      $("cfmFiltersPanel").addEventListener("click", function (e) { e.stopPropagation(); });
 
       // delegated: nearest-card click + "show on MyGeotab map"
       $("cfmPanelBody").addEventListener("click", function (e) {
